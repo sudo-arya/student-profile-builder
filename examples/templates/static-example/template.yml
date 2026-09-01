@@ -1,0 +1,11 @@
+manifest_version: "1.0"
+id: static-example
+name: Static Example
+version: "1.0.0"
+author: "Student Profile Builder"
+description: "Minimal prebuilt template demonstrating profile-data.json."
+engine: static
+source_directory: site
+compatibility:
+  profile_schema: ["1.0"]
+license: MIT

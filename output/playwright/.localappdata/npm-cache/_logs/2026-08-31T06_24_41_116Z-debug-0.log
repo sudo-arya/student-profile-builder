@@ -1,0 +1,67 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@10.8.2
+2 info using node@v20.20.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:D:\Projects\students website\.npmrc
+5 silly config load:file:C:\Users\whoam\.npmrc
+6 silly config load:file:C:\Users\whoam\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm exec playwright-cli --version
+8 verbose argv "exec" "--yes" "--package" "@playwright/cli" "--" "playwright-cli" "--version"
+9 verbose logfile logs-max:10 dir:D:\Projects\students website\output\playwright\.localappdata\npm-cache\_logs\2026-08-31T06_24_41_116Z-
+10 verbose logfile D:\Projects\students website\output\playwright\.localappdata\npm-cache\_logs\2026-08-31T06_24_41_116Z-debug-0.log
+11 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+12 silly logfile done cleaning log files
+13 http fetch GET 200 https://registry.npmjs.org/npm 153ms
+14 http fetch GET 200 https://registry.npmjs.org/@playwright%2fcli 362ms (cache miss)
+15 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+16 silly idealTree buildDeps
+17 silly fetch manifest @playwright/cli@0.1.18
+18 silly packumentCache full:https://registry.npmjs.org/@playwright%2fcli cache-miss
+19 http fetch GET 200 https://registry.npmjs.org/@playwright%2fcli 286ms (cache miss)
+20 silly packumentCache full:https://registry.npmjs.org/@playwright%2fcli set size:undefined disposed:false
+21 silly placeDep ROOT @playwright/cli@0.1.18 OK for:  want: 0.1.18
+22 silly fetch manifest playwright@1.63.0-alpha-2026-08-05
+23 silly packumentCache full:https://registry.npmjs.org/playwright cache-miss
+24 silly fetch manifest playwright-core@1.63.0-alpha-2026-08-05
+25 silly packumentCache full:https://registry.npmjs.org/playwright-core cache-miss
+26 http fetch GET 200 https://registry.npmjs.org/playwright 347ms (cache miss)
+27 silly packumentCache full:https://registry.npmjs.org/playwright set size:undefined disposed:false
+28 http fetch GET 200 https://registry.npmjs.org/playwright-core 523ms (cache miss)
+29 silly packumentCache full:https://registry.npmjs.org/playwright-core set size:undefined disposed:false
+30 silly placeDep ROOT playwright@1.63.0-alpha-2026-08-05 OK for: @playwright/cli@0.1.18 want: 1.63.0-alpha-2026-08-05
+31 silly placeDep ROOT playwright-core@1.63.0-alpha-2026-08-05 OK for: @playwright/cli@0.1.18 want: 1.63.0-alpha-2026-08-05
+32 silly fetch manifest fsevents@2.3.2
+33 silly packumentCache full:https://registry.npmjs.org/fsevents cache-miss
+34 http fetch GET 200 https://registry.npmjs.org/fsevents 42ms (cache miss)
+35 silly packumentCache full:https://registry.npmjs.org/fsevents set size:undefined disposed:false
+36 silly placeDep ROOT fsevents@2.3.2 OK for: playwright@1.63.0-alpha-2026-08-05 want: 2.3.2
+37 silly reify moves {}
+38 silly audit bulk request {
+38 silly audit   '@playwright/cli': [ '0.1.18' ],
+38 silly audit   playwright: [ '1.63.0-alpha-2026-08-05' ],
+38 silly audit   'playwright-core': [ '1.63.0-alpha-2026-08-05' ],
+38 silly audit   fsevents: [ '2.3.2' ]
+38 silly audit }
+39 verbose reify failed optional dependency D:\Projects\students website\output\playwright\.localappdata\npm-cache\_npx\31e32ef8478fbf80\node_modules\fsevents
+40 silly reify mark deleted [
+40 silly reify   'D:\\Projects\\students website\\output\\playwright\\.localappdata\\npm-cache\\_npx\\31e32ef8478fbf80\\node_modules\\fsevents'
+40 silly reify ]
+41 silly tarball no local data for playwright-core@https://registry.npmjs.org/playwright-core/-/playwright-core-1.63.0-alpha-2026-08-05.tgz. Extracting by manifest.
+42 silly tarball no local data for playwright@https://registry.npmjs.org/playwright/-/playwright-1.63.0-alpha-2026-08-05.tgz. Extracting by manifest.
+43 silly tarball no local data for @playwright/cli@https://registry.npmjs.org/@playwright/cli/-/cli-0.1.18.tgz. Extracting by manifest.
+44 http fetch GET 200 https://registry.npmjs.org/playwright/-/playwright-1.63.0-alpha-2026-08-05.tgz 269ms (cache miss)
+45 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 288ms
+46 silly audit report {}
+47 http fetch GET 200 https://registry.npmjs.org/@playwright/cli/-/cli-0.1.18.tgz 351ms (cache miss)
+48 http fetch GET 200 https://registry.npmjs.org/playwright-core/-/playwright-core-1.63.0-alpha-2026-08-05.tgz 425ms (cache miss)
+49 verbose cwd D:\Projects\students website
+50 verbose os Windows_NT 10.0.26200
+51 verbose node v20.20.0
+52 verbose npm  v10.8.2
+53 notice
+53 notice New major version of npm available! 10.8.2 -> 12.0.2
+53 notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+53 notice To update run: npm install -g npm@12.0.2
+53 notice  { force: true, [Symbol(proc-log.meta)]: true }
+54 verbose exit 0
+55 info ok

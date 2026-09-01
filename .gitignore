@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+.profile-builder-state.json
+.student-profile-builder-dependencies.json
+student-profile-backup.zip
+dist/*
+!dist/.gitkeep
+preview-draft/
+.runtime/
+/TA designs/

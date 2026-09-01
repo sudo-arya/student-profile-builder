@@ -1,0 +1,20 @@
+manifest_version: "1.0"
+id: ta-yamini-research
+name: Yamini Research Systems
+version: "1.0.0"
+author: Yamini Chandana
+description: Research-focused portfolio with typographic axes, timeline styling, and compact data-rich sections.
+engine: jinja
+entry: index.html.j2
+static_directory: static
+compatibility:
+  profile_schema: ["1.1"]
+capabilities:
+  profile_photo: true
+  research_interests: true
+  social_links: true
+  markdown_content: true
+  theme_switching: true
+layout:
+  mode: single-page
+

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" data-theme="{{ theme.default }}" data-theme-switching="{{ 'true' if theme.enabled else 'false' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Academic profile of {{ profile.name }}">
+  <title>{{ profile.name }} — {{ profile.designation }}</title>
+  {% if theme.enabled %}<script>(function(){try{var v=localStorage.getItem('profile-theme');if(v==='light'||v==='dark'||v==='system')document.documentElement.dataset.theme=v}catch(e){}})()</script>{% endif %}
+  <link rel="stylesheet" href="./assets/template/css/style.css">
+</head>
+<body>
+  <header class="profile-header">
+    {% if profile.photo %}<img class="portrait" src="{{ profile.photo }}" alt="Portrait of {{ profile.name }}">{% endif %}
+    <div>
+      <h1>{{ profile.name }}</h1>
+      <p class="role">{{ profile.designation }}</p>
+      {% if profile.department %}<p>{{ profile.department }}</p>{% endif %}
+      <p>{{ profile.institute }}</p>
+      {% if profile.email %}<p><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>{% endif %}
+      {% if profile.cv or profile.links.values() | select | list %}
+      <nav aria-label="Profile links">
+        {% if profile.cv %}<a href="{{ profile.cv }}" target="_blank" rel="noopener">Resume</a>{% endif %}
+        {% for label, url in profile.links.items() if url %}<a href="{{ url }}">{{ label | replace('_', ' ') | title }}</a>{% endfor %}
+      </nav>
+      {% endif %}
+    </div>
+  </header>
+  {% if theme.enabled %}<div class="theme-control" role="group" aria-label="Appearance">
+    <button type="button" data-theme-choice="light">Light</button>
+    <button type="button" data-theme-choice="dark">Dark</button>
+    <button type="button" data-theme-choice="system">System</button>
+  </div>{% endif %}
+  <main>
+    {% if profile.research_interests %}
+    <section aria-labelledby="interests-heading">
+      <h2 id="interests-heading">Research interests</h2>
+      <ul class="interests">{% for interest in profile.research_interests %}<li>{{ interest }}</li>{% endfor %}</ul>
+    </section>
+    {% endif %}
+    <article class="content">
+      {% for section in sections %}<section id="{{ section.id }}" data-section-type="{{ section.type }}">
+        <h2>{{ section.title }}</h2>{{ section.html | safe }}
+      </section>{% endfor %}
+    </article>
+  </main>
+  <footer><small>Generated with Student Profile Builder.</small></footer>
+  {% if theme.enabled %}<script src="./assets/template/js/main.js" defer></script>{% endif %}
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "arya-source",
+  "version": "1.63.0-alpha-2026-08-05",
+  "timestamp": 1787655284404,
+  "socketPath": "\\\\.\\pipe\\pw-07589e6b-cli-893dfbde71574860-arya-source",
+  "cli": {},
+  "browser": {
+    "browserName": "chromium",
+    "launchOptions": {
+      "headless": true,
+      "channel": "chrome",
+      "chromiumSandbox": true,
+      "args": [
+        "--disable-blink-features=AutomationControlled"
+      ]
+    }
+  }
+}

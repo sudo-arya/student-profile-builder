@@ -1,0 +1,7 @@
+Jinja2<4,>=3.1
+PyYAML<7,>=6.0
+Markdown<4,>=3.6
+bleach<7,>=6.1
+
+[test]
+pytest<9,>=8

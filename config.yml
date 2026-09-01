@@ -1,0 +1,4 @@
+template: ta-yamini-research
+output_directory: dist
+preview:
+  port: 8001

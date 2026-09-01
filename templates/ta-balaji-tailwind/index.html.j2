@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" class="{% if theme.enabled and theme.default == 'dark' %}dark{% endif %}">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Academic profile of {{ profile.name }}">
+  <title>{{ profile.name }} | Portfolio</title>
+  {% if theme.enabled %}<script>(function(){try{var s=localStorage.getItem('profile-theme'),d={{ theme.default|tojson }};if(s==='dark'||(s!=='light'&&(d==='dark'||(d==='system'&&matchMedia('(prefers-color-scheme:dark)').matches))))document.documentElement.classList.add('dark')}catch(e){}})()</script>{% endif %}
+  <link rel="stylesheet" href="./assets/template/style.css"><link rel="stylesheet" href="./assets/template/fidelity.css"><link rel="stylesheet" href="./assets/template/bottom.css"><link rel="stylesheet" href="./assets/template/layout.css">
+</head>
+<body>
+  {% set abouts=sections|selectattr('type','equalto','about')|list %}{% set about=abouts[0] if abouts else none %}
+  {% set news_items=sections|selectattr('type','equalto','news')|list %}{% set news=news_items[0] if news_items else none %}
+  {% set research_items=sections|selectattr('type','equalto','research')|list %}{% set research=research_items[0] if research_items else none %}
+  {% set publication_items=sections|selectattr('type','equalto','publications')|list %}{% set publications=publication_items[0] if publication_items else none %}
+  {% set project_items=sections|selectattr('type','equalto','projects')|list %}{% set projects=project_items[0] if project_items else none %}
+  {% set education_items=sections|selectattr('type','equalto','education')|list %}{% set education=education_items[0] if education_items else none %}
+  {% set experience_items=sections|selectattr('type','equalto','experience')|list %}{% set experience=experience_items[0] if experience_items else none %}
+  {% set teaching_items=sections|selectattr('type','equalto','teaching')|list %}{% set teaching=teaching_items[0] if teaching_items else none %}
+  {% set skill_items=sections|selectattr('type','equalto','skills')|list %}{% set skills=skill_items[0] if skill_items else none %}
+  {% set award_items=sections|selectattr('type','equalto','awards')|list %}{% set awards=award_items[0] if award_items else none %}
+  {% set talk_items=sections|selectattr('type','equalto','talks')|list %}{% set talks=talk_items[0] if talk_items else none %}
+  {% set service_items=sections|selectattr('type','equalto','service')|list %}{% set service=service_items[0] if service_items else none %}
+  {% set dataset_items=sections|selectattr('id','equalto','datasets')|list %}{% set datasets=dataset_items[0] if dataset_items else none %}
+  {% set contact_items=sections|selectattr('type','equalto','contact')|list %}{% set contact=contact_items[0] if contact_items else none %}
+
+  <nav class="site-nav">
+    <div class="nav-bar"><a href="#top" class="brand">{{ profile.name }}</a><div class="nav-actions">
+      {% if theme.enabled %}<button id="theme-toggle" class="control" type="button" aria-label="Toggle color theme">Theme</button>{% endif %}
+      <button id="menu-toggle" class="control menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle navigation menu">Menu</button>
+    </div></div>
+    <div class="desktop-nav">{% if about %}<a href="#{{ about.id }}">About</a>{% endif %}{% if research %}<a href="#{{ research.id }}">Research</a>{% endif %}{% if publications %}<a href="#{{ publications.id }}">Publications</a>{% endif %}{% if projects %}<a href="#{{ projects.id }}">Projects</a>{% endif %}{% if education or experience %}<a href="#education-experience">Education &amp; Experience</a>{% endif %}<a href="#contact">Contact</a></div>
+    <div id="mobile-menu" class="mobile-nav hidden">{% if about %}<a href="#{{ about.id }}" class="mobile-link">About</a>{% endif %}{% if research %}<a href="#{{ research.id }}" class="mobile-link">Research</a>{% endif %}{% if publications %}<a href="#{{ publications.id }}" class="mobile-link">Publications</a>{% endif %}{% if projects %}<a href="#{{ projects.id }}" class="mobile-link">Projects</a>{% endif %}{% if education or experience %}<a href="#education-experience" class="mobile-link">Education &amp; Experience</a>{% endif %}<a href="#contact" class="mobile-link">Contact</a></div>
+  </nav>
+
+  <header id="top" class="profile-hero"><div class="hero-layout">
+    {% if profile.photo and 'profile-placeholder.svg' not in profile.photo %}<img src="{{ profile.photo }}" alt="Portrait of {{ profile.name }}" class="portrait">{% else %}<div class="avatar">{{ profile.name.split()[-2:]|map('first')|join('')|upper }}</div>{% endif %}
+    <div class="identity"><h1>{{ profile.name }}</h1><h2>{{ profile.designation }}</h2><p class="affiliation">{% if profile.department %}{{ profile.department }}<span> | </span>{% endif %}{{ profile.institute }}</p>
+      {% if profile.research_interests %}<p class="interest-summary">Research interests include {% for i in profile.research_interests %}{% if loop.first %}<strong>{{ i }}</strong>{% else %}{{ i }}{% endif %}{% if not loop.last %}{% if loop.revindex == 2 %}, and {% else %}, {% endif %}{% endif %}{% endfor %}.</p>{% endif %}
+      <div class="profile-links">{% if profile.email %}<a class="link-chip" href="mailto:{{ profile.email }}">Email</a>{% endif %}{% for label,url in profile.links.items() if url %}<a class="link-chip" href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ label|replace('_',' ')|title }}</a>{% endfor %}{% if profile.cv %}<a class="link-chip resume-chip" href="{{ profile.cv }}" target="_blank" rel="noopener">Resume</a>{% endif %}</div>
+    </div>
+  </div></header>
+
+  <main class="reference-main">
+    {% if about or news %}<div class="about-news">
+      {% if about %}<section id="{{ about.id }}" data-section-type="about" class="reference-section about-panel"><h2>{{ about.title }}</h2><div class="markdown-body">{{ about.html|safe }}</div></section>{% endif %}
+      {% if news %}<section id="{{ news.id }}" data-section-type="news" class="news-panel"><h2>{{ news.title }}</h2><div class="markdown-body">{{ news.html|safe }}</div></section>{% endif %}
+    </div>{% endif %}
+
+    {% if research %}<section id="{{ research.id }}" data-section-type="research" class="reference-section"><h2>{{ research.title }}</h2><div class="markdown-body">{{ research.html|safe }}</div></section>{% endif %}
+    {% if publications %}<section id="{{ publications.id }}" data-section-type="publications" class="reference-section"><h2>{{ publications.title }}</h2><div class="markdown-body">{{ publications.html|safe }}</div></section>{% endif %}
+    {% if projects %}<section id="{{ projects.id }}" data-section-type="projects" class="reference-section"><h2>{{ projects.title }}</h2><div class="markdown-body">{{ projects.html|safe }}</div></section>{% endif %}
+
+    {% if education or experience %}<div id="education-experience" class="two-column feature-pair">
+      {% if education %}<section id="{{ education.id }}" data-section-type="education" class="reference-section"><h2>{{ education.title }}</h2><div class="markdown-body">{{ education.html|safe }}</div></section>{% endif %}
+      {% if experience %}<section id="{{ experience.id }}" data-section-type="experience" class="reference-section"><h2>Experience</h2><div class="markdown-body">{{ experience.html|safe }}</div></section>{% endif %}
+    </div>{% endif %}
+
+    {% if teaching or skills or awards %}<div class="two-column teaching-pair">
+      {% if teaching %}<section id="{{ teaching.id }}" data-section-type="teaching" class="reference-section"><h2>Teaching</h2><div class="markdown-body">{{ teaching.html|safe }}</div></section>{% endif %}
+      <div class="stacked-column">{% if skills %}<section id="{{ skills.id }}" data-section-type="skills" class="reference-section"><h2>Skills &amp; Tools</h2><div class="markdown-body">{{ skills.html|safe }}</div></section>{% endif %}{% if awards %}<section id="{{ awards.id }}" data-section-type="awards" class="reference-section"><h2>Awards</h2><div class="markdown-body">{{ awards.html|safe }}</div></section>{% endif %}</div>
+    </div>{% endif %}
+
+    {% if talks or service or datasets %}<div class="misc-grid">
+      {% if talks %}<section id="{{ talks.id }}" data-section-type="talks" class="compact-section"><h3>Invited Talks</h3><div class="markdown-body">{{ talks.html|safe }}</div></section>{% endif %}
+      {% if service %}<section id="{{ service.id }}" data-section-type="service" class="compact-section"><h3>{{ service.title }}</h3><div class="markdown-body">{{ service.html|safe }}</div></section>{% endif %}
+      {% if datasets %}<section id="{{ datasets.id }}" data-section-type="custom" class="compact-section dataset-panel"><h3>Datasets</h3><div class="markdown-body">{{ datasets.html|safe }}</div></section>{% endif %}
+    </div>{% endif %}
+
+    {% for s in sections if s.type not in ['about','news','research','publications','projects','education','experience','teaching','skills','awards','talks','service','contact'] and s.id != 'datasets' %}<section id="{{ s.id }}" data-section-type="{{ s.type }}" class="reference-section extra-section"><h2>{{ s.title }}</h2><div class="markdown-body">{{ s.html|safe }}</div></section>{% endfor %}
+  </main>
+
+  <footer id="contact" class="site-footer"><div><h2>Contact &amp; References</h2><div class="footer-grid"><div><p>For research discussions, student projects, or collaboration enquiries, please reach out via email.</p>{% if profile.email %}<a class="footer-email" href="mailto:{{ profile.email }}">{{ profile.email }}</a>{% endif %}</div><div class="footer-contact markdown-body">{% if contact %}{{ contact.html|safe }}{% else %}<p>{{ profile.institute }}</p>{% endif %}<p class="references-note">References are available upon request.</p></div></div><div class="footer-bottom"><p>© {{ site.generated_at[:4] }} {{ profile.name }}. All rights reserved.</p><div>{% for label,url in profile.links.items() if url and label in ['github','linkedin'] %}<a href="{{ url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ label|title }}">{{ label|title }}</a>{% endfor %}</div></div></div></footer>
+  <script src="./assets/template/main.js" defer></script><script src="./assets/template/structure.js" defer></script><script src="./assets/template/presentation.js" defer></script><script src="./assets/template/icons.js" defer></script>
+</body></html>

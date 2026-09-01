@@ -1,0 +1,22 @@
+{
+  "playwrightVersion": "1.63.0-alpha-2026-08-05",
+  "playwrightLib": "D:\\Projects\\students website\\output\\playwright\\.tooling\\node_modules\\playwright-core",
+  "title": "arya-audit",
+  "browser": {
+    "guid": "browser@c003c35e64419637712f80e30a0810b7",
+    "browserName": "chromium",
+    "launchOptions": {
+      "channel": "chrome",
+      "args": [
+        "--disable-blink-features=AutomationControlled"
+      ],
+      "ignoreAllDefaultArgs": false,
+      "handleSIGINT": false,
+      "handleSIGTERM": false,
+      "headless": true,
+      "tracesDir": "D:\\Projects\\students website\\output\\playwright\\template-audit\\.playwright-cli\\traces",
+      "chromiumSandbox": true
+    }
+  },
+  "endpoint": "\\\\.\\pipe\\pw-07589e6b-browser-browser@c003c3"
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Academic profile of {{ profile.name }}">
+  <title>{{ profile.name }} — {{ profile.designation }}</title>
+  <link rel="stylesheet" href="./assets/template/style.css"><link rel="stylesheet" href="./assets/template/fidelity.css"><link rel="stylesheet" href="./assets/template/bottom.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div class="paper">
+  <aside class="sidebar">
+    {% if profile.photo and 'profile-placeholder.svg' not in profile.photo %}<img class="portrait" src="{{ profile.photo }}" alt="Portrait of {{ profile.name }}">{% else %}<div class="portrait"><span>{{ profile.name.split()[-2:]|map('first')|join('')|upper }}</span></div>{% endif %}
+    <h1>{{ profile.name }}</h1>
+    <p class="role">{{ profile.designation }}</p><p class="muted">{% if profile.department %}{{ profile.department }}<br>{% endif %}{{ profile.institute }}</p>
+    {% if profile.email %}<p><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>{% endif %}
+    {% if sections %}<nav aria-label="Portfolio sections">{% for section in sections %}<a href="#{{ section.id }}">{{ '%02d'|format(loop.index) }} — {{ section.title }}</a>{% endfor %}</nav>{% endif %}
+    {% if profile.cv or profile.links.values() | select | list %}<div class="links">
+      {% for label,url in profile.links.items() if url %}<a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ label|replace('_',' ')|title }}</a>{% endfor %}
+      {% if profile.cv %}<a href="{{ profile.cv }}" target="_blank" rel="noopener">Resume</a>{% endif %}
+    </div>{% endif %}
+  </aside>
+  <main id="main-content">
+    <header class="hero"><div class="eyebrow">Institute portfolio · academic record</div><h2>Researching AI that is<br><em>reliable, understandable, useful.</em></h2>
+      {% if profile.research_interests %}<p>{{ profile.research_interests[:3]|join(' · ') }}</p>{% endif %}
+    </header>
+    {% for section in sections %}<section id="{{ section.id }}" class="{{ 'lined' if loop.index is even else '' }}" data-section-type="{{ section.type }}">
+      <div class="section-no">{{ '%02d'|format(loop.index) }}</div><div class="section-content"><h3>{{ section.title }}</h3><div class="markdown-body">{{ section.html|safe }}</div></div>
+    </section>{% endfor %}
+    <footer>{{ profile.institute }}</footer>
+  </main>
+</div>
+<script src="./assets/template/structure.js"></script><script src="./assets/template/presentation.js"></script></body></html>

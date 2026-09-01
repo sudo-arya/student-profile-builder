@@ -1,0 +1,16 @@
+manifest_version: "1.0"
+id: external-build-example
+name: External Build Example
+version: "1.0.0"
+author: "Student Profile Builder"
+description: "Tiny Python build fixture demonstrating the external-build contract without Node."
+engine: external-build
+requirements:
+  executables: []
+build:
+  command: ["{python}", "build_fixture.py"]
+  output_directory: build-output
+  data_file: generated/profile-data.json
+compatibility:
+  profile_schema: ["1.0"]
+license: MIT

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" class="{% if theme.enabled and theme.default == 'dark' %}dark{% endif %}">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Academic profile of {{ profile.name }}">
+  <title>{{ profile.name }} — Academic Profile</title>
+  {% if theme.enabled %}<script>(function(){try{var s=localStorage.getItem('profile-theme'),d={{ theme.default|tojson }};if(s==='dark'||(s!=='light'&&(d==='dark'||(d==='system'&&matchMedia('(prefers-color-scheme:dark)').matches))))document.documentElement.classList.add('dark')}catch(e){}})()</script>{% endif %}
+  <link rel="stylesheet" href="./assets/template/style.css"><link rel="stylesheet" href="./assets/template/fidelity.css"><link rel="stylesheet" href="./assets/template/semantic.css"><link rel="stylesheet" href="./assets/template/bottom.css">
+</head>
+<body>
+  <header class="mobile-header"><div><strong>{{ profile.name }}</strong><small>{{ profile.designation }}</small></div><a href="#contact">Contact</a></header>
+  <div class="page"><div class="layout">
+    <aside class="sidebar"><div class="profile-card">
+      {% if theme.enabled %}<button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"><span id="theme-icon" aria-hidden="true">🌙</span></button>{% endif %}
+      {% if profile.photo and 'profile-placeholder.svg' not in profile.photo %}<img class="portrait" src="{{ profile.photo }}" alt="Portrait of {{ profile.name }}">{% else %}<div class="avatar">{{ profile.name.split()[:2]|map('first')|join('')|upper }}</div>{% endif %}
+      <h1>{{ profile.name }}</h1><p class="role">{{ profile.designation }}</p>
+      <div class="affiliation">{% if profile.department %}<p class="department">{{ profile.department }}</p>{% endif %}<p>{{ profile.institute }}</p></div>
+      {% if profile.email %}<a href="mailto:{{ profile.email }}" class="email">{{ profile.email }}</a>{% endif %}
+      {% if profile.links.values()|select|list %}<div class="social-links">{% for label,url in profile.links.items() if url %}<a class="social-link" href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ label|replace('_',' ')|title }}</a>{% endfor %}</div>{% endif %}
+      {% if profile.cv %}<a href="{{ profile.cv }}" target="_blank" rel="noopener" class="resume-button">View Resume</a>{% endif %}
+      {% if sections %}<nav class="section-nav" aria-label="On this page"><p>On this page</p>{% for s in sections %}<a href="#{{ s.id }}">{{ s.title }}</a>{% endfor %}</nav>{% endif %}
+    </div></aside>
+    <main class="content">
+    {% for s in sections %}<section id="{{ s.id }}" data-section-type="{{ s.type }}" class="section-anchor"><div class="section-heading"><p>{{ s.title }}</p><span></span></div><div class="markdown-body">{% if s.type == 'contact' %}<h2>Let’s connect</h2>{% endif %}{{ s.html|safe }}</div>{% if s.type == 'about' and profile.research_interests %}<div class="research-interests"><h3>Research interests</h3><div>{% for item in profile.research_interests %}<span class="interest">{{ item }}</span>{% endfor %}</div></div>{% endif %}</section>{% endfor %}
+    <footer>© {{ site.generated_at[:4] }} {{ profile.name }}</footer></main>
+  </div></div>
+  <script src="./assets/template/main.js" defer></script><script src="./assets/template/structure.js" defer></script><script src="./assets/template/presentation.js" defer></script>
+</body></html>

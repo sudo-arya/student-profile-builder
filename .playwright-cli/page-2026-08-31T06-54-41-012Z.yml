@@ -1,0 +1,293 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - link "Dr. Aarya Mehta" [ref=e4] [cursor=pointer]:
+      - /url: "#top"
+    - generic [ref=e5]:
+      - link "About" [ref=e6] [cursor=pointer]:
+        - /url: "#about"
+      - link "Research" [ref=e7] [cursor=pointer]:
+        - /url: "#current-research"
+      - link "Publications" [ref=e8] [cursor=pointer]:
+        - /url: "#publications"
+      - link "Projects" [ref=e9] [cursor=pointer]:
+        - /url: "#projects"
+      - link "Education & Experience" [ref=e10] [cursor=pointer]:
+        - /url: "#education-experience"
+      - link "Contact" [ref=e11] [cursor=pointer]:
+        - /url: "#contact"
+  - banner [ref=e12]:
+    - generic [ref=e13]:
+      - generic [ref=e14]: AM
+      - generic [ref=e15]:
+        - heading "Dr. Aarya Mehta" [level=1] [ref=e16]
+        - heading "Doctoral Researcher in Artificial Intelligence" [level=2] [ref=e17]
+        - paragraph [ref=e18]: Department of Computer Science and Engineering | Indian Institute of Technology Delhi
+        - paragraph [ref=e19]:
+          - text: Research interests include
+          - strong [ref=e20]: Trustworthy Artificial Intelligence
+          - text: ", Machine Learning, Natural Language Processing, Human-Centred AI, and AI for Social Good."
+        - generic [ref=e21]:
+          - link "Email" [ref=e22] [cursor=pointer]:
+            - /url: mailto:aarya.mehta@example.edu
+          - link "Github" [ref=e23] [cursor=pointer]:
+            - /url: https://github.com/aarya-mehta-demo
+          - link "Linkedin" [ref=e24] [cursor=pointer]:
+            - /url: https://www.linkedin.com/in/aarya-mehta-demo
+          - link "Scholar" [ref=e25] [cursor=pointer]:
+            - /url: https://scholar.google.com/citations?user=DEMO
+          - link "Website" [ref=e26] [cursor=pointer]:
+            - /url: https://aarya-mehta.example.com
+          - link "Resume" [ref=e27] [cursor=pointer]:
+            - /url: assets/user/example-resume.pdf
+  - main [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - heading "● About Me" [level=2] [ref=e31]
+        - generic [ref=e32]:
+          - paragraph [ref=e33]:
+            - text: I am a doctoral researcher working at the intersection of
+            - strong [ref=e34]: trustworthy machine learning
+            - text: ", natural language processing, and human-centred computing. My research explores how intelligent systems can remain reliable, understandable, and useful in high-impact settings."
+          - paragraph [ref=e35]:
+            - text: I am currently advised by
+            - link "Professor R. Sharma" [ref=e36] [cursor=pointer]:
+              - /url: https://example.com
+            - text: and collaborate with the Responsible Computing Lab. Before beginning my doctorate, I worked on applied data-science projects in healthcare and education.
+          - blockquote [ref=e37]:
+            - paragraph [ref=e38]: My goal is to build AI systems that people can understand, question, and confidently use.
+      - generic [ref=e39]:
+        - heading "▤ Recent News" [level=2] [ref=e40]
+        - list [ref=e42]:
+          - listitem [ref=e43]:
+            - strong [ref=e44]: "August 2026:"
+            - text: Released the Bharosa model-evaluation toolkit.
+          - listitem [ref=e45]:
+            - strong [ref=e46]: "May 2026:"
+            - text: Presented our multilingual evaluation work at an international conference.
+          - listitem [ref=e47]:
+            - strong [ref=e48]: "January 2026:"
+            - text: Began a collaboration on human-centred explanations.
+    - generic [ref=e49]:
+      - heading "⌕ Current Research" [level=2] [ref=e50]
+      - generic [ref=e51]:
+        - article [ref=e52]:
+          - heading "Reliable language models for public services" [level=2] [ref=e53]
+          - paragraph [ref=e54]: This project studies uncertainty estimation, factual consistency, and human oversight for language models used in information-access systems.
+          - paragraph [ref=e55]:
+            - strong [ref=e56]: "Methods:"
+            - text: retrieval-augmented generation, calibration, evaluation design, and participatory user studies.
+        - article [ref=e57]:
+          - heading "Explainable decision support" [level=2] [ref=e58]
+          - paragraph [ref=e59]: We are developing explanation methods that adapt to the needs of domain experts and affected users rather than providing a single technical explanation for everyone.
+    - generic [ref=e60]:
+      - heading "▥ Selected Publications" [level=2] [ref=e61]
+      - generic [ref=e62]:
+        - list [ref=e63]:
+          - listitem [ref=e64]:
+            - paragraph [ref=e65]:
+              - strong [ref=e66]: A. Mehta
+              - text: ", R. Sharma, and N. Rao. “Evaluating Explanations for Multilingual Decision Support.”"
+              - emphasis [ref=e67]: Proceedings of the Example Conference on Responsible AI
+              - text: ", 2026."
+              - link "Paper" [ref=e68] [cursor=pointer]:
+                - /url: https://example.com/paper
+              - text: ·
+              - link "Code" [ref=e69] [cursor=pointer]:
+                - /url: https://github.com/aarya-mehta-demo/example-paper
+          - listitem [ref=e70]:
+            - paragraph [ref=e71]:
+              - strong [ref=e72]: A. Mehta
+              - text: and P. Singh. “Calibration under Distribution Shift for Public-Service NLP.”
+              - emphasis [ref=e73]: Journal of Trustworthy Computing
+              - text: ", 2025."
+              - link "DOI" [ref=e74] [cursor=pointer]:
+                - /url: https://doi.org/10.0000/example
+          - listitem [ref=e75]:
+            - paragraph [ref=e76]:
+              - text: S. Khan,
+              - strong [ref=e77]: A. Mehta
+              - text: ", and R. Sharma. “Participatory Evaluation of AI-Assisted Information Systems.”"
+              - emphasis [ref=e78]: Example HCI Symposium
+              - text: ", 2025."
+              - link "Preprint" [ref=e79] [cursor=pointer]:
+                - /url: https://example.com/preprint
+        - paragraph [ref=e80]: These entries are fictional and are included only for template development.
+    - generic [ref=e81]:
+      - heading "▣ Featured Projects" [level=2] [ref=e82]
+      - generic [ref=e83]:
+        - article [ref=e84]:
+          - heading "Bharosa" [level=2] [ref=e85]
+          - paragraph [ref=e86]: Model reliability toolkit
+          - paragraph [ref=e87]: An open-source toolkit for measuring calibration, subgroup performance, and failure patterns in classification and language-model pipelines.
+          - generic "Technologies" [ref=e88]:
+            - generic [ref=e89]: Python
+            - generic [ref=e90]: PyTorch
+            - generic [ref=e91]: FastAPI
+            - generic [ref=e92]: Docker
+          - generic [ref=e93]:
+            - link "Source code" [ref=e94] [cursor=pointer]:
+              - /url: https://github.com/aarya-mehta-demo/bharosa
+            - link "Project page" [ref=e95] [cursor=pointer]:
+              - /url: https://example.com/bharosa
+        - article [ref=e96]:
+          - heading "Samvaad" [level=2] [ref=e97]
+          - paragraph [ref=e98]: Multilingual research assistant
+          - paragraph [ref=e99]: A research prototype for retrieving and summarizing public documents across Indian languages, with citations and human-verification controls.
+          - generic "Technologies" [ref=e100]:
+            - generic [ref=e101]: Python
+            - generic [ref=e102]: vector search
+            - generic [ref=e103]: JavaScript
+            - generic [ref=e104]: accessibility testing
+        - article [ref=e105]:
+          - heading "Reproducible AI benchmark" [level=2] [ref=e106]
+          - paragraph [ref=e107]: A documented benchmark and dataset card for studying robustness under language and domain shift.
+    - generic [ref=e108]:
+      - generic [ref=e109]:
+        - heading "◆ Education" [level=2] [ref=e110]
+        - generic [ref=e111]:
+          - article [ref=e112]:
+            - heading "PhD in Computer Science and Engineering" [level=2] [ref=e113]
+            - paragraph [ref=e114]:
+              - strong [ref=e115]: Indian Institute of Technology Delhi
+              - text: 2024–Present
+            - list [ref=e116]:
+              - listitem [ref=e117]: "Research area: Trustworthy and Human-Centred AI"
+              - listitem [ref=e118]: Institute doctoral fellowship
+          - article [ref=e119]:
+            - heading "MTech in Computer Science" [level=2] [ref=e120]
+            - paragraph [ref=e121]:
+              - strong [ref=e122]: Example Institute of Technology
+              - text: 2022–2024
+            - paragraph [ref=e123]:
+              - text: "Thesis:"
+              - emphasis [ref=e124]: Evaluating Robustness in Multilingual Classification Systems
+          - article [ref=e125]:
+            - heading "BTech in Information Technology" [level=2] [ref=e126]
+            - paragraph [ref=e127]:
+              - strong [ref=e128]: Example National University
+              - text: 2018–2022
+      - generic [ref=e129]:
+        - heading "■ Experience" [level=2] [ref=e130]
+        - generic [ref=e131]:
+          - article [ref=e132]:
+            - heading "Graduate Research Assistant — Responsible Computing Lab" [level=2] [ref=e133]
+            - paragraph [ref=e134]:
+              - strong [ref=e135]: IIT Delhi · July 2024–Present
+            - list [ref=e136]:
+              - listitem [ref=e137]: Designed evaluation pipelines for multilingual language models.
+              - listitem [ref=e138]: Coordinated annotation studies with interdisciplinary research teams.
+              - listitem [ref=e139]: Mentored undergraduate students working on reproducibility projects.
+          - article [ref=e140]:
+            - heading "Data Science Intern — Example Research Labs" [level=2] [ref=e141]
+            - paragraph [ref=e142]:
+              - strong [ref=e143]: May 2023–July 2023
+            - list [ref=e144]:
+              - listitem [ref=e145]: Developed interpretable forecasting models for public-health planning.
+              - listitem [ref=e146]: Created an internal model-monitoring dashboard and technical documentation.
+    - generic [ref=e147]:
+      - generic [ref=e148]:
+        - heading "▤ Teaching" [level=2] [ref=e149]
+        - generic [ref=e150]:
+          - table [ref=e151]:
+            - rowgroup [ref=e152]:
+              - row [ref=e153]:
+                - columnheader "Term" [ref=e154]
+                - columnheader "Course" [ref=e155]
+                - columnheader "Role" [ref=e156]
+            - rowgroup [ref=e157]:
+              - row [ref=e158]:
+                - cell "Spring 2026" [ref=e159]
+                - cell "Artificial Intelligence" [ref=e161]
+                - cell "Teaching Assistant" [ref=e162]
+              - row [ref=e164]:
+                - cell "Autumn 2025" [ref=e165]
+                - cell "Machine Learning" [ref=e167]
+                - cell "Teaching Assistant" [ref=e168]
+              - row [ref=e170]:
+                - cell "Spring 2025" [ref=e171]
+                - cell "Data Structures" [ref=e173]
+                - cell "Tutorial Mentor" [ref=e174]
+          - heading "Mentoring" [level=3] [ref=e176]
+          - list [ref=e177]:
+            - listitem [ref=e178]: Mentored two undergraduate research projects on model evaluation.
+            - listitem [ref=e179]: Conducted workshops on reproducible experiments and technical writing.
+            - listitem [ref=e180]: Prepared tutorials, programming exercises, and assessment rubrics.
+      - generic [ref=e181]:
+        - generic [ref=e182]:
+          - heading "</> Skills & Tools" [level=2] [ref=e183]
+          - generic [ref=e184]:
+            - paragraph [ref=e185]:
+              - strong [ref=e186]: "Research:"
+              - text: experimental design, qualitative interviews, statistical analysis, and model evaluation
+            - paragraph [ref=e187]:
+              - strong [ref=e188]: "Programming:"
+              - text: Python, JavaScript, SQL, Bash, and LaTeX
+            - paragraph [ref=e189]:
+              - strong [ref=e190]: "Machine learning:"
+              - text: PyTorch, scikit-learn, Hugging Face, pandas, and Jupyter
+            - paragraph [ref=e191]:
+              - strong [ref=e192]: "Languages:"
+              - text: English, Hindi, and Marathi
+        - generic [ref=e193]:
+          - heading "★ Awards" [level=2] [ref=e194]
+          - list [ref=e196]:
+            - listitem [ref=e197]:
+              - strong [ref=e198]: Institute Doctoral Fellowship
+              - text: ", IIT Delhi, 2024–Present"
+            - listitem [ref=e199]:
+              - strong [ref=e200]: Best Student Paper — Honourable Mention
+              - text: ", Example AI Conference, 2025"
+            - listitem [ref=e201]:
+              - strong [ref=e202]: Graduate Research Travel Grant
+              - text: ", 2025"
+            - listitem [ref=e203]:
+              - strong [ref=e204]: University Gold Medal
+              - text: ", Example National University, 2022"
+    - generic [ref=e205]:
+      - generic [ref=e206]:
+        - heading "Invited Talks" [level=3] [ref=e207]
+        - generic [ref=e208]:
+          - article [ref=e209]:
+            - heading "Designing useful explanations for AI systems" [level=2] [ref=e210]
+            - paragraph [ref=e211]: Responsible Technology Seminar, New Delhi, March 2026.
+          - article [ref=e212]:
+            - heading "Evaluating multilingual models beyond aggregate accuracy" [level=2] [ref=e213]
+            - paragraph [ref=e214]: Example NLP Workshop, Bengaluru, November 2025.
+      - generic [ref=e215]:
+        - heading "Academic Service" [level=3] [ref=e216]
+        - list [ref=e218]:
+          - listitem [ref=e219]: Student volunteer, Example Conference on Responsible AI, 2025
+          - listitem [ref=e220]: Reviewer, Example Workshop on AI Evaluation, 2026
+          - listitem [ref=e221]: Coordinator, Department Graduate Research Forum, 2025–Present
+          - listitem [ref=e222]: Volunteer mentor for introductory programming workshops
+      - generic [ref=e223]:
+        - heading "Datasets" [level=3] [ref=e224]
+        - generic [ref=e225]:
+          - heading "Multilingual Reliability Test Set" [level=2] [ref=e226]
+          - paragraph [ref=e227]:
+            - text: A fictional evaluation resource demonstrating how a custom section may contain descriptive text, metadata, and links.
+            - link "Dataset card" [ref=e228] [cursor=pointer]:
+              - /url: https://example.com/dataset
+            - text: ·
+            - link "Documentation" [ref=e229] [cursor=pointer]:
+              - /url: https://example.com/docs
+  - contentinfo [ref=e230]:
+    - generic [ref=e231]:
+      - heading "Contact & References" [level=2] [ref=e232]
+      - generic [ref=e233]:
+        - generic [ref=e234]:
+          - paragraph [ref=e235]: For research discussions, student projects, or collaboration enquiries, please reach out via email.
+          - link "aarya.mehta@example.edu" [ref=e236] [cursor=pointer]:
+            - /url: mailto:aarya.mehta@example.edu
+        - paragraph [ref=e238]:
+          - strong [ref=e239]: "Office:"
+          - text: Room 000, Example Academic Building, IIT Delhi, New Delhi 110016
+          - strong [ref=e240]: "Availability:"
+          - text: By appointment
+      - generic [ref=e241]:
+        - paragraph [ref=e242]: © 2026 Dr. Aarya Mehta. All rights reserved.
+        - generic [ref=e243]:
+          - link "Github" [ref=e244] [cursor=pointer]:
+            - /url: https://github.com/aarya-mehta-demo
+          - link "Linkedin" [ref=e245] [cursor=pointer]:
+            - /url: https://www.linkedin.com/in/aarya-mehta-demo

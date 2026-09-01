@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: student-profile-builder
+Version: 0.1.0
+Summary: Generate static academic profile sites from Markdown
+Requires-Python: >=3.11
+Requires-Dist: Jinja2<4,>=3.1
+Requires-Dist: PyYAML<7,>=6.0
+Requires-Dist: Markdown<4,>=3.6
+Requires-Dist: bleach<7,>=6.1
+Provides-Extra: test
+Requires-Dist: pytest<9,>=8; extra == "test"

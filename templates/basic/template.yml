@@ -1,0 +1,23 @@
+id: basic
+manifest_version: "1.0"
+name: Basic Academic
+version: "1.0.0"
+author: "Student Profile Builder"
+description: >
+  Minimal, responsive reference academic profile template.
+engine: jinja
+entry: index.html.j2
+static_directory: static
+compatibility:
+  profile_schema:
+    - "1.0"
+    - "1.1"
+capabilities:
+  profile_photo: true
+  research_interests: true
+  social_links: true
+  markdown_content: true
+  theme_switching: true
+license: MIT
+layout:
+  mode: single-page

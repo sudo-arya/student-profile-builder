@@ -1,0 +1,19 @@
+manifest_version: "1.0"
+id: ta-arya-editorial
+name: Arya Editorial Academic
+version: "1.0.0"
+author: Arya Singh
+description: Editorial academic portfolio with numbered sections and a fixed red sidebar.
+engine: jinja
+entry: index.html.j2
+static_directory: static
+compatibility:
+  profile_schema: ["1.1"]
+capabilities:
+  profile_photo: true
+  research_interests: true
+  social_links: true
+  markdown_content: true
+  theme_switching: false
+layout:
+  mode: single-page

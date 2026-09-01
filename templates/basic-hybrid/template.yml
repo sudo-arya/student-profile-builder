@@ -1,0 +1,16 @@
+id: basic-hybrid
+name: Basic Hybrid
+version: 1.0.0
+author: Student Profile Builder
+description: Reference landing page with generated detail pages.
+engine: external-build
+build:
+  command: ['{python}', 'build.py']
+  output_directory: dist
+  data_file: profile-data.json
+compatibility:
+  profile_schema: ['1.1']
+capabilities:
+  theme_switching: false
+layout:
+  mode: hybrid
