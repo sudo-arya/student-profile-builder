@@ -95,8 +95,8 @@ def print_summary(python: Path, project: Path) -> None:
     version=subprocess.run([str(python),"-c","import platform; print(platform.python_version())"],cwd=project,
                            shell=False,text=True,capture_output=True,check=True).stdout.strip()
     tools=optional_tools()
-    print(f"\nStudent Profile Builder\n\nCore application\n[OK] Python {version}\n[OK] Isolated environment\n[OK] Python dependencies")
-    print("\nIITD deployment\n"+("[OK] ssh\n[OK] scp" if tools["ssh"] and tools["scp"] else "[WARN] OpenSSH client missing"))
+    print(f"\nStudent Profile Builder\n\nCore application\n[OK] Python {version}\n[OK] Isolated environment\n[OK] Interpreter: {python.resolve()}\n[OK] Python dependencies")
+    print("\nIITD deployment\n"+("[OK] OpenSSH Client\n[OK] ssh\n[OK] scp" if tools["ssh"] and tools["scp"] else "[ACTION REQUIRED] OpenSSH Client is required before IITD publishing.\nInstall/enable both ssh and scp, then run bootstrap.py --check again."))
     print("\nGitHub deployment\n"+("[OK] git" if tools["git"] else "[WARN] git not installed")+"\n"+("[OK] gh" if tools["gh"] else "[WARN] GitHub CLI not installed"))
 
 

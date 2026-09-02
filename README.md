@@ -26,8 +26,8 @@ last-valid-backup recovery.
 Python **3.11.x is the recommended compatibility version** for this project. Python 3.11.9 is the
 version used by the reported clean Windows installation and is the baseline this source supports.
 Newer supported Python versions may also work, but using 3.11 keeps another-device installations
-consistent. Git is needed only to
-download/update the source with Git, while GitHub CLI and OpenSSH are optional deployment tools.
+consistent. Git is needed only to download/update the source with Git. OpenSSH is required when
+configuring IIT Delhi publishing; GitHub CLI is required only for GitHub Pages publishing.
 
 ### 1. Check Python
 
@@ -95,13 +95,36 @@ Do not use plain `python manage.py ...` unless `.venv` is activated. Plain `pyth
 the system installation and produce errors such as `No module named yaml` even though bootstrap
 installed everything correctly inside `.venv`.
 
-### Optional Windows tools
+### 5. Configure OpenSSH for IITD publishing
+
+Windows 10/11 normally provides OpenSSH Client as an optional capability. Check it with:
+
+```powershell
+ssh -V
+scp
+```
+
+If either command is unavailable, open **PowerShell as Administrator** and run:
+
+```powershell
+Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+```
+
+Restart PowerShell and Student Profile Builder, then confirm the setup:
+
+```powershell
+ssh -V
+py -3.11 bootstrap.py --check
+```
+
+OpenSSH is compulsory for IITD deployment, but its absence does not prevent local editing,
+previewing, or building. The application never installs system components automatically.
+
+### Other optional Windows tools
 
 - Missing `git`: affects cloning, updates, and GitHub deployment only.
 - Missing `gh`: affects GitHub Pages publishing only. Install from <https://cli.github.com/> and
   run `gh auth login`.
-- Missing `ssh`/`scp`: affects IIT Delhi publishing only. In Windows Settings, install the
-  **OpenSSH Client** optional feature.
 - Missing optional tools never block profile editing, local builds, or preview.
 
 ## macOS: complete installation and startup
@@ -163,8 +186,10 @@ installed everything correctly inside `.venv`.
    python3.11 bootstrap.py
    ```
 
-4. For later launches, run `./start.sh` or `.venv/bin/python manage.py gui`. Git, GitHub CLI, and
-   OpenSSH remain optional unless their corresponding deployment feature is used.
+4. For later launches, run `./start.sh` or `.venv/bin/python manage.py gui`.
+5. IITD publishing requires OpenSSH. macOS normally includes `ssh` and `scp`; verify both with
+   `ssh -V` and `scp`. On Linux, install the client when missing (Ubuntu/Debian:
+   `sudo apt install openssh-client`). Git and GitHub CLI remain optional unless needed.
 
 See [Installation and startup](docs/INSTALLATION.md) for first-run internet requirements, repair,
 proxy behavior, convenience launchers, and optional deployment tools.

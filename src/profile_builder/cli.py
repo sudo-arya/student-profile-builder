@@ -220,13 +220,13 @@ def _github_interactive(root: Path, config) -> None:
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv); root = Path.cwd()
     try:
-        ensure_working_profile(root)
-        if not args.command: return interactive(root)
         if args.command=="deployment-worker":
             from .deployment_worker import run_worker
             worker_root=(args.project_root or root).resolve()
             if not (worker_root/"manage.py").is_file(): raise BuilderError("Deployment project root is invalid.")
             return run_worker(worker_root,args.job_id)
+        ensure_working_profile(root)
+        if not args.command: return interactive(root)
         config = load_config(root / "config.yml"); registry = TemplateRegistry(root / "templates")
         if args.command == "validate":
             profile=parse_profile(root/"profile.md",root); print("Profile valid.")

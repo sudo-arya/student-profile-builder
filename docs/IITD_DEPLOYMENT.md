@@ -21,6 +21,16 @@ ssh -V
 scp
 ```
 
+If either command is missing, open PowerShell as Administrator and install the Windows capability:
+
+```powershell
+Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+```
+
+On Ubuntu/Debian use `sudo apt install openssh-client`. macOS normally includes both commands.
+Restart Student Profile Builder after installation. IITD publishing remains disabled until both
+commands are available; system software is never installed automatically.
+
 The Student Profile Builder never asks for or stores your IIT Delhi password. When authentication
 is required, the system's OpenSSH client displays the password prompt directly. Existing SSH keys
 or an SSH agent work naturally; the builder does not create or manage keys.

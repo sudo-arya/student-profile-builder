@@ -45,9 +45,12 @@ def test_duplicate_active_provider_target_is_rejected(tmp_path):
 
 
 def test_windows_terminal_uses_argument_array_without_credentials(tmp_path):
-    calls=[]; launcher=TerminalLauncher(platform="win32",which=lambda name:"C:/Windows/cmd.exe" if name in {"cmd.exe","cmd"} else None,popen=lambda args,**kw:calls.append((args,kw)))
+    calls=[]; launcher=TerminalLauncher(platform="win32",popen=lambda args,**kw:calls.append((args,kw)))
     result=launcher.launch(["C:/Project/.venv/Scripts/python.exe","manage.py","deployment-worker","a"*32],"Deploy",tmp_path/".runtime")
     assert result.started and calls and calls[0][1]["shell"] is False
+    assert calls[0][0][0]=="C:/Project/.venv/Scripts/python.exe"
+    assert calls[0][1]["cwd"]==tmp_path
+    assert calls[0][1]["creationflags"]
     joined=" ".join(calls[0][0]).lower(); assert "password" not in joined and "token" not in joined
 
 
@@ -55,6 +58,18 @@ def test_worker_command_carries_absolute_project_root(tmp_path):
     root=tmp_path.resolve(); (root/".venv"/"Scripts").mkdir(parents=True); (root/".venv"/"Scripts"/"python.exe").write_text("")
     command=worker_command(root,"d"*32)
     assert command[-2:]==["--project-root",str(root)]
+
+
+def test_worker_cli_uses_explicit_root_before_workspace_initialization(monkeypatch,tmp_path):
+    root=project(tmp_path/"project"); (root/"manage.py").write_text("",encoding="utf-8"); outside=tmp_path/"home"; outside.mkdir()
+    import profile_builder.cli as cli
+    calls=[]
+    monkeypatch.chdir(outside)
+    monkeypatch.setattr(cli,"ensure_working_profile",lambda _root:(_ for _ in ()).throw(AssertionError("must not initialize terminal cwd")))
+    monkeypatch.setattr("profile_builder.deployment_worker.run_worker",lambda worker_root,job_id:(calls.append((worker_root,job_id)) or 0))
+    job_id="e"*32
+    assert cli.main(["deployment-worker",job_id,"--project-root",str(root)])==0
+    assert calls==[(root.resolve(),job_id)]
 
 
 def test_linux_terminal_and_missing_fallback(tmp_path):

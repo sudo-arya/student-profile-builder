@@ -19,6 +19,7 @@ from .utils import BuilderError
 JOB_ID = re.compile(r"^[0-9a-f]{32}$")
 ACTIVE = {"waiting", "running"}
 FINAL = {"success", "failed", "cancelled", "warning", "interrupted"}
+WAITING_TIMEOUT_SECONDS = 30
 SAFE_KEYS = {"id","provider","state","started_at","updated_at","finished_at","target","userid",
              "site","repository","username","dry_run","url","repository_url","message","pid"}
 
@@ -62,7 +63,7 @@ class DeploymentJobStore:
         elif job.get("state")=="waiting":
             try: age=(datetime.now(timezone.utc)-datetime.fromisoformat(job["updated_at"])).total_seconds()
             except (KeyError,TypeError,ValueError): age=0
-            if age>600: job=self.update(job_id,state="interrupted",message="Deployment worker did not start.",finished_at=_now())
+            if age>WAITING_TIMEOUT_SECONDS: job=self.update(job_id,state="interrupted",message="Deployment worker did not start.",finished_at=_now())
         return job
 
     def update(self, job_id: str, **changes) -> dict:
@@ -97,13 +98,12 @@ class TerminalLauncher:
         manual=subprocess.list2cmdline(command) if self.platform.startswith("win") else shlex.join(command)
         try:
             if self.platform.startswith("win"):
-                cmd=self.which("cmd.exe") or self.which("cmd")
-                if not cmd: return LaunchResult(False,manual,message="No Windows command terminal was found.")
-                line=subprocess.list2cmdline(command)
-                wt=self.which("wt.exe") or self.which("wt")
-                args=[wt,"new-tab","--title",title,cmd,"/k",line] if wt else [cmd,"/k",line]
-                self.popen(args,shell=False,cwd=runtime.parent)
-                return LaunchResult(True,manual,"Windows Terminal" if wt else "Command Prompt")
+                # Launch the argument array directly. Passing a pre-quoted command through
+                # ``cmd /k`` loses arguments on some Windows installations when the project
+                # path contains spaces, causing the worker to use the terminal's home folder.
+                creation_flags=getattr(subprocess,"CREATE_NEW_CONSOLE",0x00000010)
+                self.popen(command,shell=False,cwd=runtime.parent,creationflags=creation_flags)
+                return LaunchResult(True,manual,"Windows console")
             if self.platform=="darwin":
                 opener=self.which("open")
                 if not opener: return LaunchResult(False,manual,message="macOS Terminal launcher was not found.")

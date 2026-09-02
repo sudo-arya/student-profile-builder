@@ -85,9 +85,14 @@ packages cached. Existing `HTTP_PROXY`, `HTTPS_PROXY`, lowercase equivalents, an
 are respected; the project does not store proxy credentials. A future offline distribution could
 include a reviewed `wheelhouse/`, but no offline bundle is provided in this phase.
 
-Git, GitHub CLI, and OpenSSH are optional system tools. Their absence does not block editing,
-building, or previewing. Bootstrap reports them but never installs Python, Git, `gh`, OpenSSH, Node,
-or other system software.
+OpenSSH (`ssh` and `scp`) is required before IITD publishing can be configured or used. On Windows,
+install it from an Administrator PowerShell with
+`Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0`. macOS normally includes it. On
+Ubuntu/Debian use `sudo apt install openssh-client`. Verify with `ssh -V` and `scp`, then run
+`python bootstrap.py --check` again. Its absence does not block editing, building, or previewing.
+
+Git and GitHub CLI are required only for their corresponding Git/GitHub workflows. Bootstrap
+reports system tools but never installs Python, Git, `gh`, OpenSSH, Node, or other system software.
 
 Maintainers can run `python bootstrap.py --check` to verify or update the isolated environment and
 tool status without launching the GUI.
