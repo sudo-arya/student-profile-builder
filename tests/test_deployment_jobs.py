@@ -9,7 +9,7 @@ from urllib.request import ProxyHandler, Request, build_opener
 
 import pytest
 from conftest import ROOT, make_project
-from profile_builder.deployment_jobs import DeploymentJobStore, LaunchResult, TerminalLauncher, worker_command
+from profile_builder.deployment_jobs import DeploymentJobStore, LaunchResult, TerminalLauncher, process_alive, worker_command
 from profile_builder.deployment_worker import run_worker
 from profile_builder.gui import create_server
 
@@ -31,6 +31,12 @@ def test_dead_running_worker_becomes_interrupted(tmp_path):
     store=DeploymentJobStore(tmp_path,alive=lambda _pid:False); job=store.create("iitd",target="public",userid="student")
     store.update(job["id"],state="running",pid=999999)
     assert store.read(job["id"])["state"]=="interrupted"
+
+
+def test_process_alive_handles_current_and_missing_processes():
+    import os
+    assert process_alive(os.getpid())
+    assert not process_alive(2_147_483_647)
 
 
 def test_stale_waiting_job_becomes_interrupted(tmp_path):

@@ -29,8 +29,27 @@ def _now() -> str: return datetime.now(timezone.utc).isoformat()
 
 def process_alive(pid: int) -> bool:
     if not isinstance(pid,int) or pid <= 0: return False
+    if os.name=="nt":
+        # ``os.kill(pid, 0)`` is unreliable on Windows and can leave a pending
+        # WinError 87 that Python 3.11 surfaces as SystemError. Querying the
+        # process handle is read-only and distinguishes active/closed workers.
+        import ctypes
+        kernel32=ctypes.WinDLL("kernel32",use_last_error=True)
+        kernel32.OpenProcess.argtypes=(ctypes.c_ulong,ctypes.c_int,ctypes.c_ulong)
+        kernel32.OpenProcess.restype=ctypes.c_void_p
+        kernel32.GetExitCodeProcess.argtypes=(ctypes.c_void_p,ctypes.POINTER(ctypes.c_ulong))
+        kernel32.GetExitCodeProcess.restype=ctypes.c_int
+        kernel32.CloseHandle.argtypes=(ctypes.c_void_p,)
+        kernel32.CloseHandle.restype=ctypes.c_int
+        handle=kernel32.OpenProcess(0x1000,False,pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+        if not handle: return False
+        try:
+            exit_code=ctypes.c_ulong()
+            return bool(kernel32.GetExitCodeProcess(handle,ctypes.byref(exit_code))) and exit_code.value==259
+        finally:
+            kernel32.CloseHandle(handle)
     try: os.kill(pid,0); return True
-    except OSError: return False
+    except (OSError,SystemError): return False
 
 
 class DeploymentJobStore:
