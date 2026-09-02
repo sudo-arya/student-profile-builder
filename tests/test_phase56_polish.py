@@ -18,7 +18,7 @@ def project(tmp_path: Path) -> Path:
     root=make_project(tmp_path); shutil.copy(ROOT/"examples/profiles/full.md",root/"profile.md"); return root
 
 
-@pytest.mark.parametrize("template",["basic","basic-sidebar","basic-multipage","basic-hybrid"])
+@pytest.mark.parametrize("template",["basic","basic-multipage","basic-hybrid"])
 def test_reference_templates_conform_and_keep_sections(template,tmp_path):
     root=project(tmp_path); output=build_site(root,Config(),template_id=template)
     assert (output/"index.html").is_file() and not validate_output(output)

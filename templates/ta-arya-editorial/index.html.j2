@@ -21,7 +21,7 @@
     </div>{% endif %}
   </aside>
   <main id="main-content">
-    <header class="hero"><div class="eyebrow">Institute portfolio · academic record</div><h2>Researching AI that is<br><em>reliable, understandable, useful.</em></h2>
+    <header class="hero"><div class="eyebrow">{{ profile.institute }}</div><h2>{{ profile.designation }}</h2>
       {% if profile.research_interests %}<p>{{ profile.research_interests[:3]|join(' · ') }}</p>{% endif %}
     </header>
     {% for section in sections %}<section id="{{ section.id }}" class="{{ 'lined' if loop.index is even else '' }}" data-section-type="{{ section.type }}">

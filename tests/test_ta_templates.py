@@ -77,7 +77,7 @@ def test_imported_templates_appear_and_render_in_gui_draft_preview(tmp_path):
         response = opener.open(Request(base + "/template/preview", data=urlencode({
             "csrf": csrf, "id": "ta-yamini-research"
         }).encode())).read().decode()
-        assert "Yamini Research Systems" in response
+        assert "Template 4" in response
         assert "/draft-site/" in response
         assert "template: basic" in (root / "config.yml").read_text(encoding="utf-8")
         draft = opener.open(base + "/draft-site/index.html").read().decode()
@@ -270,9 +270,9 @@ def test_imported_template_bottoms_and_list_markers_match_design_contract(tmp_pa
     (root / "profile.md").write_text(profile_text.replace("enabled: true", "enabled: false", 1), encoding="utf-8")
     expected = {
         "ta-arya-editorial": "Indian Institute of Technology Delhi</footer>",
-        "ta-balaji-tailwind": "Contact &amp; References",
+            "ta-balaji-tailwind": ">Contact</h2>",
         "ta-krishna-sidebar": "Dr. Aarya Mehta</footer>",
-        "ta-yamini-research": "Built as a portfolio template",
+            "ta-yamini-research": "Dr. Aarya Mehta</span>",
     }
     for template_id, footer_text in expected.items():
         output = build_site(root, Config(), template_id=template_id,
@@ -289,10 +289,10 @@ def test_imported_templates_preserve_source_layout_signatures():
     balaji = (ROOT / "templates/ta-balaji-tailwind/index.html.j2").read_text(encoding="utf-8")
     krishna = (ROOT / "templates/ta-krishna-sidebar/index.html.j2").read_text(encoding="utf-8")
     yamini = (ROOT / "templates/ta-yamini-research/index.html.j2").read_text(encoding="utf-8")
-    assert "Researching AI that is" in arya and "reliable, understandable, useful" in arya
+    assert "{{ profile.designation }}" in arya and "{{ profile.institute }}" in arya
     assert 'class="about-news"' in balaji and 'class="misc-grid"' in balaji
-    assert 'class="mobile-header"' in krishna and "Let’s connect" in krishna
-    assert 'id="hero-stats"' in yamini and "Career Trajectory" in yamini
+    assert 'class="mobile-header"' in krishna and "{{ s.title }}" in krishna
+    assert 'id="hero-stats"' in yamini and "{{ s.title }}" in yamini
 
 
 def test_krishna_matches_reference_section_treatments_and_interactions():

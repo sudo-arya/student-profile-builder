@@ -21,7 +21,7 @@
       {% if sections %}<nav class="section-nav" aria-label="On this page"><p>On this page</p>{% for s in sections %}<a href="#{{ s.id }}">{{ s.title }}</a>{% endfor %}</nav>{% endif %}
     </div></aside>
     <main class="content">
-    {% for s in sections %}<section id="{{ s.id }}" data-section-type="{{ s.type }}" class="section-anchor"><div class="section-heading"><p>{{ s.title }}</p><span></span></div><div class="markdown-body">{% if s.type == 'contact' %}<h2>Let’s connect</h2>{% endif %}{{ s.html|safe }}</div>{% if s.type == 'about' and profile.research_interests %}<div class="research-interests"><h3>Research interests</h3><div>{% for item in profile.research_interests %}<span class="interest">{{ item }}</span>{% endfor %}</div></div>{% endif %}</section>{% endfor %}
+    {% for s in sections %}<section id="{{ s.id }}" data-section-type="{{ s.type }}" class="section-anchor"><div class="section-heading"><p>{{ s.title }}</p><span></span></div><div class="markdown-body">{{ s.html|safe }}</div>{% if s.type == 'about' and profile.research_interests %}<div class="research-interests"><div>{% for item in profile.research_interests %}<span class="interest">{{ item }}</span>{% endfor %}</div></div>{% endif %}</section>{% endfor %}
     <footer>© {{ site.generated_at[:4] }} {{ profile.name }}</footer></main>
   </div></div>
   <script src="./assets/template/main.js" defer></script><script src="./assets/template/structure.js" defer></script><script src="./assets/template/presentation.js" defer></script>

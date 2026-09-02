@@ -1,10 +1,10 @@
 id: basic
 manifest_version: "1.0"
-name: Basic Academic
+name: Template 5
 version: "1.0.0"
 author: "Student Profile Builder"
 description: >
-  Minimal, responsive reference academic profile template.
+  Clean professional academic profile with a strong identity header and responsive content cards.
 engine: jinja
 entry: index.html.j2
 static_directory: static

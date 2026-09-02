@@ -3,6 +3,15 @@
 These rules apply throughout this repository.
 
 - Inspect and preserve user/manual modifications before broad changes; the current filesystem is authoritative when Git metadata is unavailable.
+- Never roll the repository back to an older prompt-era implementation; the current files are authoritative.
+- Do not use Playwright routinely. Use unit/integration tests, HTTP checks, and HTML/CSS inspection unless the user explicitly requests browser automation or it is indispensable.
+- `profile.md` is ignored, local mutable user data. The tracked canonical starter lives at `defaults/profile.default.md`.
+- Restore Default copies the canonical starter into the local profile only after confirmation and backup.
+- A GUI live draft must never modify `profile.md` or `dist/` until Save; render it only in an ignored runtime output tree.
+- Saved builds and deployment always use the saved profile, never an unsaved browser draft. Invalid drafts retain the last valid preview.
+- Internal navigation must protect unsaved changes with Save, Discard, and Stay choices.
+- Basic templates remain visually distinct from contributed templates. Preserve Template 1–4 contributor credits.
+- Template contributions must never contain personal profile data, machine paths, secrets, or dependencies on ignored development folders.
 - The GUI uses a persistent split workspace with preview permanently available on desktop and Edit/Preview switching on narrow screens.
 - Normal successful saves rebuild and refresh the existing preview; they must not open another preview. Invalid edits preserve the last valid generated preview.
 - `bootstrap.py` is the canonical environment bootstrap. Install core Python packages only inside project `.venv`, never globally, and never install Python itself.
@@ -77,3 +86,9 @@ starting terminal.
 - Converted TA designs belong under `templates/`; replace hardcoded sample-person data with normalized profile context and ordered sanitized sections.
 - Imported templates must tolerate missing optional profile fields, render arbitrary/custom sections, and preserve the original TA visual design where practical.
 - Before replacing the root demo profile with imported sample content, create a dedicated backup; keep the resulting demo coherent, representative, and valid.
+- Edit Profile operates on one canonical draft until explicit Save; typing must never write `profile.md` or `dist/`.
+- Draft rendering and uploaded draft assets belong only in ignored draft storage. Save validates and promotes the draft; Discard never changes saved state.
+- Invalid drafts preserve the last valid preview. Unsaved navigation requires Save, Discard, or Stay.
+- Publishing with an unsaved draft requires an explicit Save-and-Publish or saved-version choice; deployment never consumes a draft implicitly.
+- GUI draft preview and CLI builds share the renderer contract, while CLI and deployments always use saved `profile.md`.
+- Do not use Playwright unless the user explicitly requests it or it is indispensable.

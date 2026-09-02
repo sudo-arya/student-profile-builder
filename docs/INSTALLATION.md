@@ -1,5 +1,8 @@
 # Installation and startup
 
+Bootstrap copies `defaults/profile.default.md` to local `profile.md` only when the
+working profile is absent. Existing student data is never overwritten.
+
 Student Profile Builder is distributed as source code and supports Windows 10/11, Linux desktop
 systems (including Ubuntu), and macOS. Python 3.11 or newer must already be installed. iPhone and
 iPad iOS are not supported runtimes.

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="{% if theme.enabled and theme.default == 'dark' %}dark{% endif %}">
+<html lang="en" class="{% if theme.default == 'dark' %}dark{% endif %}">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Academic profile of {{ profile.name }}">
@@ -52,23 +52,23 @@
 
     {% if education or experience %}<div id="education-experience" class="two-column feature-pair">
       {% if education %}<section id="{{ education.id }}" data-section-type="education" class="reference-section"><h2>{{ education.title }}</h2><div class="markdown-body">{{ education.html|safe }}</div></section>{% endif %}
-      {% if experience %}<section id="{{ experience.id }}" data-section-type="experience" class="reference-section"><h2>Experience</h2><div class="markdown-body">{{ experience.html|safe }}</div></section>{% endif %}
+      {% if experience %}<section id="{{ experience.id }}" data-section-type="experience" class="reference-section"><h2>{{ experience.title }}</h2><div class="markdown-body">{{ experience.html|safe }}</div></section>{% endif %}
     </div>{% endif %}
 
     {% if teaching or skills or awards %}<div class="two-column teaching-pair">
-      {% if teaching %}<section id="{{ teaching.id }}" data-section-type="teaching" class="reference-section"><h2>Teaching</h2><div class="markdown-body">{{ teaching.html|safe }}</div></section>{% endif %}
-      <div class="stacked-column">{% if skills %}<section id="{{ skills.id }}" data-section-type="skills" class="reference-section"><h2>Skills &amp; Tools</h2><div class="markdown-body">{{ skills.html|safe }}</div></section>{% endif %}{% if awards %}<section id="{{ awards.id }}" data-section-type="awards" class="reference-section"><h2>Awards</h2><div class="markdown-body">{{ awards.html|safe }}</div></section>{% endif %}</div>
+      {% if teaching %}<section id="{{ teaching.id }}" data-section-type="teaching" class="reference-section"><h2>{{ teaching.title }}</h2><div class="markdown-body">{{ teaching.html|safe }}</div></section>{% endif %}
+      <div class="stacked-column">{% if skills %}<section id="{{ skills.id }}" data-section-type="skills" class="reference-section"><h2>{{ skills.title }}</h2><div class="markdown-body">{{ skills.html|safe }}</div></section>{% endif %}{% if awards %}<section id="{{ awards.id }}" data-section-type="awards" class="reference-section"><h2>{{ awards.title }}</h2><div class="markdown-body">{{ awards.html|safe }}</div></section>{% endif %}</div>
     </div>{% endif %}
 
     {% if talks or service or datasets %}<div class="misc-grid">
-      {% if talks %}<section id="{{ talks.id }}" data-section-type="talks" class="compact-section"><h3>Invited Talks</h3><div class="markdown-body">{{ talks.html|safe }}</div></section>{% endif %}
+      {% if talks %}<section id="{{ talks.id }}" data-section-type="talks" class="compact-section"><h3>{{ talks.title }}</h3><div class="markdown-body">{{ talks.html|safe }}</div></section>{% endif %}
       {% if service %}<section id="{{ service.id }}" data-section-type="service" class="compact-section"><h3>{{ service.title }}</h3><div class="markdown-body">{{ service.html|safe }}</div></section>{% endif %}
-      {% if datasets %}<section id="{{ datasets.id }}" data-section-type="custom" class="compact-section dataset-panel"><h3>Datasets</h3><div class="markdown-body">{{ datasets.html|safe }}</div></section>{% endif %}
+      {% if datasets %}<section id="{{ datasets.id }}" data-section-type="custom" class="compact-section dataset-panel"><h3>{{ datasets.title }}</h3><div class="markdown-body">{{ datasets.html|safe }}</div></section>{% endif %}
     </div>{% endif %}
 
     {% for s in sections if s.type not in ['about','news','research','publications','projects','education','experience','teaching','skills','awards','talks','service','contact'] and s.id != 'datasets' %}<section id="{{ s.id }}" data-section-type="{{ s.type }}" class="reference-section extra-section"><h2>{{ s.title }}</h2><div class="markdown-body">{{ s.html|safe }}</div></section>{% endfor %}
   </main>
 
-  <footer id="contact" class="site-footer"><div><h2>Contact &amp; References</h2><div class="footer-grid"><div><p>For research discussions, student projects, or collaboration enquiries, please reach out via email.</p>{% if profile.email %}<a class="footer-email" href="mailto:{{ profile.email }}">{{ profile.email }}</a>{% endif %}</div><div class="footer-contact markdown-body">{% if contact %}{{ contact.html|safe }}{% else %}<p>{{ profile.institute }}</p>{% endif %}<p class="references-note">References are available upon request.</p></div></div><div class="footer-bottom"><p>© {{ site.generated_at[:4] }} {{ profile.name }}. All rights reserved.</p><div>{% for label,url in profile.links.items() if url and label in ['github','linkedin'] %}<a href="{{ url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ label|title }}">{{ label|title }}</a>{% endfor %}</div></div></div></footer>
+  {% if contact or profile.email %}<footer id="contact" class="site-footer"><div><h2>{{ contact.title if contact else profile.name }}</h2><div class="footer-grid"><div>{% if profile.email %}<a class="footer-email" href="mailto:{{ profile.email }}">{{ profile.email }}</a>{% endif %}</div><div class="footer-contact markdown-body">{% if contact %}{{ contact.html|safe }}{% endif %}</div></div><div class="footer-bottom"><p>© {{ site.generated_at[:4] }} {{ profile.name }}</p><div>{% for label,url in profile.links.items() if url and label in ['github','linkedin'] %}<a href="{{ url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ label|title }}">{{ label|title }}</a>{% endfor %}</div></div></div></footer>{% endif %}
   <script src="./assets/template/main.js" defer></script><script src="./assets/template/structure.js" defer></script><script src="./assets/template/presentation.js" defer></script><script src="./assets/template/icons.js" defer></script>
 </body></html>

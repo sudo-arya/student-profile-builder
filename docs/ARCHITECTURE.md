@@ -1,5 +1,10 @@
 # Architecture
 
+Profile state has three layers: tracked canonical starter
+(`defaults/profile.default.md`), ignored saved working copy (`profile.md`), and
+ignored GUI draft (`.runtime/drafts/<session>/`). Builds and deployment use only saved
+data; live preview reuses `build_site` with isolated input and output paths.
+
 ```text
 profile.md → Profile Parser → Normalized Profile Model → Template Registry → Manifest
           → Renderer Adapter (Jinja | Static | External Build)
@@ -84,3 +89,4 @@ Profile mutations validate candidate data, serialize into a same-directory tempo
 that exact representation, and atomically replace `profile.md`. GUI and CLI use the same mutation
 helpers. Invalid submissions cannot replace the source; when a manual edit damages it, the GUI
 keeps navigation available and can use a valid `.bak` as its recovery editing model.
+Save first validates and prebuilds the complete candidate, checks the saved-file fingerprint for external edits, promotes staged assets, atomically updates `profile.md`, and rebuilds `dist/`. Discard clears only runtime-owned draft data. Invalid candidates retain the most recent valid draft build.

@@ -119,23 +119,23 @@ def test_isolated_template_preview_state_machine(tmp_path):
         templates=opener.open(base+"/templates").read().decode()
         token=re.search(r'name="csrf" value="([^"]+)',templates).group(1)
         assert "Choose a template" in templates and "Draft Template Preview" in templates
-        opener.open(Request(base+"/template/preview",data=urlencode({"csrf":token,"id":"basic-sidebar"}).encode()))
-        assert "<aside>" in opener.open(base+"/draft-site/").read().decode()
+        opener.open(Request(base+"/template/preview",data=urlencode({"csrf":token,"id":"basic-hybrid"}).encode()))
+        assert 'class="directory"' in opener.open(base+"/draft-site/").read().decode()
         # A rapid serve/rebuild cycle must never expose a half-deleted draft on Windows.
         for _ in range(3):
-            opener.open(Request(base+"/template/preview",data=urlencode({"csrf":token,"id":"basic-sidebar"}).encode()))
-            assert "<aside>" in opener.open(base+"/draft-site/").read().decode()
-        assert "<aside>" not in opener.open(base+"/site/").read().decode()
+            opener.open(Request(base+"/template/preview",data=urlencode({"csrf":token,"id":"basic-hybrid"}).encode()))
+            assert 'class="directory"' in opener.open(base+"/draft-site/").read().decode()
+        assert 'class="directory"' not in opener.open(base+"/site/").read().decode()
         # Leaving Templates restores the main site from the stored template.
-        opener.open(base+"/profile"); assert "<aside>" not in opener.open(base+"/site/").read().decode()
+        opener.open(base+"/profile"); assert 'class="directory"' not in opener.open(base+"/site/").read().decode()
         templates=opener.open(base+"/templates").read().decode()
         assert 'class="badge">Previewing' in templates
-        opener.open(Request(base+"/template/preview",data=urlencode({"csrf":token,"id":"basic-sidebar"}).encode()))
-        opener.open(Request(base+"/template/select",data=urlencode({"csrf":token,"id":"basic-sidebar"}).encode()))
-        assert "<aside>" in opener.open(base+"/site/").read().decode()
+        opener.open(Request(base+"/template/preview",data=urlencode({"csrf":token,"id":"basic-hybrid"}).encode()))
+        opener.open(Request(base+"/template/select",data=urlencode({"csrf":token,"id":"basic-hybrid"}).encode()))
+        assert 'class="directory"' in opener.open(base+"/site/").read().decode()
         assert "Choose a template" not in opener.open(base+"/preview").read().decode()
         from profile_builder.config import load_config
-        assert load_config(root/"config.yml").template=="basic-sidebar"
+        assert load_config(root/"config.yml").template=="basic-hybrid"
     finally: server.shutdown();server.server_close();thread.join()
 
 

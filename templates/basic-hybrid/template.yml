@@ -1,8 +1,8 @@
 id: basic-hybrid
-name: Basic Hybrid
+name: Template 6
 version: 1.0.0
 author: Student Profile Builder
-description: Reference landing page with generated detail pages.
+description: Professional landing page with profile actions and generated detail pages.
 engine: external-build
 build:
   command: ['{python}', 'build.py']
@@ -11,6 +11,6 @@ build:
 compatibility:
   profile_schema: ['1.1']
 capabilities:
-  theme_switching: false
+  theme_switching: true
 layout:
   mode: hybrid

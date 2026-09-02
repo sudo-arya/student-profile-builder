@@ -9,41 +9,37 @@
   <link rel="stylesheet" href="./assets/template/css/style.css">
 </head>
 <body>
-  <header class="profile-header">
+  <div class="site-bar"><a class="brand" href="#top">{{ profile.name }}</a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>Menu</button><div class="nav-rail"><nav id="site-nav" aria-label="Sections">{% for section in sections %}<a href="#{{ section.id }}">{{ section.title }}</a>{% endfor %}</nav><span class="nav-cue" aria-hidden="true">→</span></div>{% if theme.enabled %}<button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme" title="Switch color theme"><span aria-hidden="true">☾</span></button>{% endif %}</div>
+  <header class="profile-header" id="top">
     {% if profile.photo %}<img class="portrait" src="{{ profile.photo }}" alt="Portrait of {{ profile.name }}">{% endif %}
     <div>
-      <h1>{{ profile.name }}</h1>
+      <p class="kicker">Academic portfolio</p><h1>{{ profile.name }}</h1>
       <p class="role">{{ profile.designation }}</p>
       {% if profile.department %}<p>{{ profile.department }}</p>{% endif %}
       <p>{{ profile.institute }}</p>
       {% if profile.email %}<p><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>{% endif %}
       {% if profile.cv or profile.links.values() | select | list %}
-      <nav aria-label="Profile links">
+      <nav class="profile-actions" aria-label="Profile links">
         {% if profile.cv %}<a href="{{ profile.cv }}" target="_blank" rel="noopener">Resume</a>{% endif %}
         {% for label, url in profile.links.items() if url %}<a href="{{ url }}">{{ label | replace('_', ' ') | title }}</a>{% endfor %}
       </nav>
       {% endif %}
     </div>
   </header>
-  {% if theme.enabled %}<div class="theme-control" role="group" aria-label="Appearance">
-    <button type="button" data-theme-choice="light">Light</button>
-    <button type="button" data-theme-choice="dark">Dark</button>
-    <button type="button" data-theme-choice="system">System</button>
-  </div>{% endif %}
   <main>
     {% if profile.research_interests %}
-    <section aria-labelledby="interests-heading">
+    <section class="interest-panel" aria-labelledby="interests-heading">
       <h2 id="interests-heading">Research interests</h2>
       <ul class="interests">{% for interest in profile.research_interests %}<li>{{ interest }}</li>{% endfor %}</ul>
     </section>
     {% endif %}
     <article class="content">
       {% for section in sections %}<section id="{{ section.id }}" data-section-type="{{ section.type }}">
-        <h2>{{ section.title }}</h2>{{ section.html | safe }}
+        <p class="section-index">{{ '%02d' | format(loop.index) }}</p><h2>{{ section.title }}</h2><div class="section-body">{{ section.html | safe }}</div>
       </section>{% endfor %}
     </article>
   </main>
-  <footer><small>Generated with Student Profile Builder.</small></footer>
+  <script src="./assets/template/js/navigation.js" defer></script>
   {% if theme.enabled %}<script src="./assets/template/js/main.js" defer></script>{% endif %}
 </body>
 </html>

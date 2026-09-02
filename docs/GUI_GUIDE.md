@@ -1,5 +1,15 @@
 # Local GUI guide
 
+Edit Profile provides **Structured Editor** and **Raw Markdown** modes for one
+shared draft. Valid unsaved edits render via the normal builder under
+`.runtime/drafts/<session>/`; they do not modify `profile.md`, `dist/`, or deployment
+input. Invalid Markdown pauses preview and keeps the last valid site. Save commits
+transactionally; Discard reloads saved data. Navigation is protected by Stay,
+Discard Changes, and Save & Continue choices plus the browser reload warning.
+
+**Restore Default Profile** requires confirmation, keeps a bounded backup, restores
+the tracked Aarya Mehta starter, and rebuilds the saved preview.
+
 Normally run `py bootstrap.py` on Windows or `python3 bootstrap.py` on Linux/macOS. Developers may
 run `python manage.py gui` inside an existing environment. Open `http://127.0.0.1:8765/`, keep the terminal open, and press
 Ctrl+C there to stop. The editor is localhost-only and has no database.
@@ -69,3 +79,4 @@ does not change the saved selection. Use saves the template and rebuilds the mai
 templates receive the same normalized Markdown data as all templates, so absent optional fields and
 custom sections remain supported. The original `TA designs/` reference folder is not used by the
 GUI or generated website.
+An amber draft state means the right pane contains unsaved content. **Save Changes** validates the full draft and updates the saved Markdown and main site; **Discard Changes** reloads saved values. Invalid edits show the last valid preview while reporting the validation error. Internal navigation and browser close/refresh are guarded while changes are unsaved.

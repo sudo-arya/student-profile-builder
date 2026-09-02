@@ -1,9 +1,9 @@
 manifest_version: "1.0"
 id: ta-arya-editorial
-name: Arya Editorial Academic
+name: Template 1
 version: "1.0.0"
 author: Arya Singh
-description: Editorial academic portfolio with numbered sections and a fixed red sidebar.
+description: Editorial academic portfolio with numbered sections and a fixed red sidebar. Designed by Arya Singh.
 engine: jinja
 entry: index.html.j2
 static_directory: static

@@ -1,4 +1,11 @@
 .venv/
+/profile.md
+/profile.md.bak
+/assets/managed/
+/assets/.drafts/
+/local-templates/
+/output/
+/.playwright-cli/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -10,4 +17,5 @@ dist/*
 !dist/.gitkeep
 preview-draft/
 .runtime/
+/.template-check-*/
 /TA designs/

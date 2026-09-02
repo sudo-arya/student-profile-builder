@@ -1,6 +1,7 @@
 from pathlib import Path
 import shutil
 import tempfile
+import re
 import yaml
 from .builder import build_site
 from .config import Config
@@ -8,6 +9,11 @@ from .renderers import renderer_for
 from .template_manifest import PROFILE_SCHEMA_VERSION, TemplateManifest, check_compatibility
 from .templates import TemplateRegistry
 from .utils import BuilderError
+
+FORBIDDEN_CONTRIBUTION_TEXT = (
+    "profile.md", "local-templates/", "local-templates\\", "ta designs/", "ta designs\\",
+    "assets/managed/", "assets\\managed\\",
+)
 
 
 def format_info(item: TemplateManifest) -> str:
@@ -41,11 +47,44 @@ def check_template(root: Path, template_id: str, profile: Path | None = None) ->
     return checks
 
 
-def create_template(root: Path, template_id: str, name: str, author: str, engine: str) -> Path:
+def contribution_check(root: Path, template_id: str, *, local: bool = False) -> list[str]:
+    base = root / ("local-templates" if local else "templates")
+    folder = base / template_id
+    if not folder.is_dir(): raise BuilderError(f"Template not found: {template_id}")
+    item = TemplateRegistry(base).get(template_id, compatible=False)
+    checks = ["[OK] template.yml valid"]
+    check_compatibility(item); renderer_for(item.engine)
+    if not item.author.strip(): raise BuilderError("Template contributor/author is required.")
+    if not (folder / "README.md").is_file(): raise BuilderError("Template README.md is required.")
+    for path in folder.rglob("*"):
+        if not path.is_file(): continue
+        if path.name.lower() in {".env", "id_rsa", "id_ed25519"}: raise BuilderError(f"Secret-like file is not allowed: {path.name}")
+        if path.suffix.lower() not in {".html", ".j2", ".css", ".js", ".json", ".yml", ".yaml", ".md", ".py", ".txt", ".svg"}: continue
+        text = path.read_text(encoding="utf-8", errors="replace").lower()
+        found = next((marker for marker in FORBIDDEN_CONTRIBUTION_TEXT if marker in text), None)
+        if found: raise BuilderError(f"Template contains forbidden local dependency '{found}' in {path.relative_to(folder)}")
+        if re.search(r"(?:[a-z]:\\\\|/users/|/home/)[^\s\"']+", text):
+            raise BuilderError(f"Template contains an absolute machine path in {path.relative_to(folder)}")
+    checks += ["[OK] contributor credit present", "[OK] README present", "[OK] no private/local dependencies found"]
+    return checks
+
+
+def promote_template(root: Path, template_id: str) -> Path:
+    contribution_check(root, template_id, local=True)
+    source = root / "local-templates" / template_id
+    target = root / "templates" / template_id
+    if target.exists(): raise BuilderError(f"Repository template already exists: {template_id}")
+    shutil.copytree(source, target)
+    return target
+
+
+def create_template(root: Path, template_id: str, name: str, author: str, engine: str,
+                    *, location: str = "repository") -> Path:
     from .template_manifest import ENGINES, ID_PATTERN
     if not ID_PATTERN.fullmatch(template_id): raise BuilderError("Template ID must use lowercase letters, numbers, and hyphens.")
     if engine not in ENGINES: raise BuilderError(f"Engine must be one of: {', '.join(sorted(ENGINES))}.")
-    folder = root / "templates" / template_id
+    if location not in {"repository", "local"}: raise BuilderError("Location must be repository or local.")
+    folder = root / ("local-templates" if location == "local" else "templates") / template_id
     if folder.exists(): raise BuilderError(f"Template already exists: {template_id}")
     folder.mkdir(parents=True)
     manifest = {"manifest_version": "1.0", "id": template_id, "name": name, "version": "0.1.0",

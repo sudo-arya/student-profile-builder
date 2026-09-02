@@ -1,8 +1,8 @@
 id: basic-multipage
-name: Basic Multipage
+name: Template 7
 version: 1.0.0
 author: Student Profile Builder
-description: Reference multi-page academic site with grouped and custom-section pages.
+description: Warm editorial multi-page portfolio with grouped academic content.
 engine: external-build
 build:
   command: ['{python}', 'build.py']
@@ -11,6 +11,6 @@ build:
 compatibility:
   profile_schema: ['1.1']
 capabilities:
-  theme_switching: false
+  theme_switching: true
 layout:
   mode: multi-page

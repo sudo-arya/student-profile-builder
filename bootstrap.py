@@ -107,8 +107,11 @@ def main() -> int:
         print(f"Student Profile Builder requires Python 3.11 or newer.\n\nDetected:\nPython {detected}\n\nPlease install a supported Python version and run bootstrap.py again.")
         return 1
     try:
+        if not (project / ".gitignore").is_file():
+            print("[WARN] .gitignore is missing; local profile and runtime files may be exposed.")
         python=ensure_environment(project)
         ensure_dependencies(project,python)
+        run([str(python),"-c","import sys; from pathlib import Path; sys.path.insert(0, 'src'); from profile_builder.workspace import ensure_working_profile; ensure_working_profile(Path.cwd())"],project)
         run([str(python),"-c","import sys; sys.path.insert(0, 'src'); import profile_builder"],project)
         print_summary(python,project)
         if "--check" in sys.argv:

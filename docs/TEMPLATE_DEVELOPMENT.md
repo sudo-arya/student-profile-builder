@@ -1,5 +1,9 @@
 # Developing a template
 
+Use `--location local` for ignored experiments, `template-contribution-check` for
+privacy/portability checks, and `template-promote` for a validated copy into
+tracked `templates/`. See `CONTRIBUTING_TEMPLATES.md`.
+
 You are developing only a website template. The profile builder supplies normalized student
 data and expects an ordinary static website in return. Do not change `profile.md`, the parser,
 CLI, deployment code, or another template unless the maintainers coordinate a contract change.
@@ -139,7 +143,6 @@ student gallery. These are optional descriptive metadata.
 ## Reference template architectures
 
 - `basic`: Jinja single page with a linear academic layout and theme switching.
-- `basic-sidebar`: Jinja single page with responsive sidebar and section anchors.
 - `basic-multipage`: external-build reference producing grouped pages plus a page for every custom section.
 - `basic-hybrid`: external-build landing page with one detail page per section.
 - `examples/templates/static-example`: static HTML/JS loading normalized `profile-data.json`.

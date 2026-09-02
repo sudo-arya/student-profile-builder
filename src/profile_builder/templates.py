@@ -1,5 +1,6 @@
 """Dynamic template registry."""
 from pathlib import Path
+import re
 from .template_manifest import TemplateManifest, check_compatibility, load_manifest
 from .utils import BuilderError
 
@@ -9,8 +10,11 @@ Template = TemplateManifest  # Backwards-compatible public name.
 def discover_templates(root: Path) -> dict[str, TemplateManifest]:
     found: dict[str, TemplateManifest] = {}
     if not root.is_dir(): return found
-    for manifest_path in sorted(root.glob("*/template.yml")):
-        item = load_manifest(manifest_path)
+    items=[load_manifest(path) for path in root.glob("*/template.yml")]
+    def order(item):
+        match=re.fullmatch(r"Template\s+(\d+)",item.name,re.I)
+        return (0,int(match.group(1))) if match else (1,item.name.casefold())
+    for item in sorted(items,key=order):
         if item.id in found: raise BuilderError(f"Duplicate template id: {item.id}")
         found[item.id] = item
     return found

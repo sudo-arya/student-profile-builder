@@ -1,5 +1,11 @@
 # Writing your profile
 
+The complete local source `profile.md` is ignored by Git.
+`defaults/profile.default.md` is the read-only canonical starter. Raw Markdown mode
+edits the full YAML front matter and every ordered Markdown section.
+
+Structured and Raw Markdown editing are two views of the same canonical GUI draft. Valid changes synchronize between them and are rendered through the selected template. `profile.md` changes only after **Save Changes**; Markdown tables, code fences, Unicode, custom sections, section order, theme settings, and staged asset references use the normal parser and renderer pipeline.
+
 `profile.md` is the only source of truth for your academic information. The builder separates
 the YAML front matter between the two `---` lines from the Markdown below it.
 

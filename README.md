@@ -1,5 +1,14 @@
 # Student Profile Website Builder
 
+Edit Profile uses an isolated live draft. Changes update the right preview automatically, while `profile.md`, deployable `dist/`, and saved managed assets remain unchanged until **Save Changes**. Invalid edits keep the last valid preview, and **Discard Changes** restores saved values.
+
+> `profile.md` is a local working profile and is ignored by Git. The tracked
+> `defaults/profile.default.md` is the canonical Aarya Mehta starter used only
+> on first run and by the confirmed Restore Default action.
+
+Run `python manage.py git-check` to verify safety. Template authors can work in
+ignored `local-templates/`; see `docs/CONTRIBUTING_TEMPLATES.md`.
+
 A lightweight, cross-platform tool that turns one Markdown student profile into a static
 academic website. Phase 2 provides profile parsing and validation, dynamic template discovery,
 three renderer adapters, template developer tooling, clean static builds, and local preview.

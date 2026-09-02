@@ -16,6 +16,7 @@ from .utils import BuilderError, confined_path
 REQUIRED_FIELDS = ("name", "designation", "institute")
 SECTION_ID = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 THEME_DEFAULTS = {"light", "dark", "system"}
+EMAIL = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 ALLOWED_TAGS = set(bleach.sanitizer.ALLOWED_TAGS) | {"p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "code", "hr", "br", "table", "thead", "tbody", "tr", "th", "td", "ul", "ol", "li"}
 ALLOWED_ATTRIBUTES = {"a": ["href", "title"], "code": ["class"]}
 
@@ -95,6 +96,8 @@ def parse_profile(path: Path, project_root: Path | None = None) -> Profile:
     elif isinstance(raw.get("links"), dict):
         for label, url in raw["links"].items():
             if url and (not isinstance(url, str) or urlparse(url).scheme not in {"http", "https", "mailto"}): errors.append(f'Link "{label}" must use http, https, or mailto.')
+    if raw.get("email") and (not isinstance(raw["email"],str) or not EMAIL.fullmatch(raw["email"].strip())):
+        errors.append('Field "email" must be a valid email address or empty.')
     for asset_field,label in (("photo","Profile image"),("cv","CV"),("icon","Website icon")):
       asset_value=raw.get(asset_field)
       if asset_value:
@@ -133,7 +136,8 @@ def parse_profile(path: Path, project_root: Path | None = None) -> Profile:
     return Profile(raw, combined_md, combined_html, tuple(sections), theme)
 
 
-def serialize_profile(profile: Profile, path: Path, *, backup: bool = True) -> None:
+def serialize_profile(profile: Profile, path: Path, *, backup: bool = True,
+                      project_root: Path | None = None) -> None:
     data = dict(profile.data)
     data["theme"] = {"enabled": profile.theme.enabled, "default": profile.theme.default}
     data["sections"] = [{"id": s.id, "title": s.title, "type": s.type, "visible": s.visible,
@@ -145,7 +149,7 @@ def serialize_profile(profile: Profile, path: Path, *, backup: bool = True) -> N
         with tempfile.NamedTemporaryFile("w",encoding="utf-8",dir=path.parent,prefix=f".{path.name}.",suffix=".tmp",delete=False,newline="\n") as handle:
             handle.write(text); handle.flush(); os.fsync(handle.fileno()); temporary=Path(handle.name)
         # Validate the exact serialized representation before touching the source of truth.
-        parse_profile(temporary,path.parent)
+        parse_profile(temporary,project_root or path.parent)
         if backup and path.exists() and not path.with_suffix(path.suffix+".bak").exists(): shutil.copy2(path,path.with_suffix(path.suffix+".bak"))
         os.replace(temporary,path); temporary=None
     finally:

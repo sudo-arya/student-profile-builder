@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 from urllib.request import build_opener, HTTPRedirectHandler, ProxyHandler, Request
 from urllib.error import HTTPError
 from urllib.parse import urlencode
@@ -76,7 +77,7 @@ def test_theme_enabled_basic(default,tmp_path):
     root=project(tmp_path); p=parse_profile(root/"profile.md",root)
     serialize_profile(Profile(p.data,p.markdown,p.html,p.sections,Theme(True,default)),root/"profile.md",backup=False)
     html=(build_site(root)/"index.html").read_text(encoding="utf-8")
-    assert 'data-theme-choice="light"' in html and f'data-theme="{default}"' in html
+    assert 'data-theme-toggle' in html and f'data-theme="{default}"' in html
     css=(root/"dist/assets/template/css/style.css").read_text(); assert 'data-theme="light"' in css and 'data-theme="dark"' in css
 
 
@@ -209,6 +210,23 @@ def test_gui_imports_photo_and_cv_to_safe_managed_names(tmp_path):
     finally: server.shutdown(); server.server_close(); thread.join()
 
 
+def test_draft_upload_is_staged_and_discard_preserves_saved_asset(tmp_path):
+    root=project(tmp_path); original=(root/"profile.md").read_bytes(); server,thread,opener,base=gui_client(root)
+    try:
+        token,_=csrf(opener,base,"/profile"); p=parse_profile(root/"profile.md",root)
+        fields={"csrf":token,"draft_kind":"profile","name":p.data["name"],"designation":p.data["designation"],
+                "department":p.data["department"],"institute":p.data["institute"],"email":p.data["email"],
+                "interests":"AI","photo_action":"keep"}
+        body,kind=multipart(fields,{"photo_file":("draft.png","image/png",b"\x89PNG\r\n\x1a\ndraft")})
+        opener.open(Request(base+"/profile/structured-preview",data=body,headers={"Content-Type":kind}))
+        draft=json.loads(opener.open(base+"/api/draft").read())
+        assert "assets/.drafts/" in draft["markdown"] and (root/"profile.md").read_bytes()==original
+        staged=list((root/"assets/.drafts").rglob("*")); assert any(path.is_file() for path in staged)
+        opener.open(Request(base+"/profile/draft-discard",data=urlencode({"csrf":token}).encode()))
+        assert (root/"profile.md").read_bytes()==original and not (root/"assets/.drafts").exists()
+    finally: server.shutdown(); server.server_close(); thread.join()
+
+
 def test_gui_can_replace_upload_with_default_placeholder_without_hiding_photo(tmp_path):
     root=project(tmp_path); managed=root/"assets/managed/photo-0123456789abcdef.jpg"; managed.parent.mkdir(parents=True,exist_ok=True); managed.write_bytes(b"old upload")
     current=parse_profile(root/"profile.md",root); data=dict(current.data); data["photo"]="assets/managed/photo-0123456789abcdef.jpg"
@@ -240,6 +258,9 @@ def test_duplicate_delete_and_undo_section(tmp_path):
         token,page=csrf(opener,base,"/profile"); first=parse_profile(root/"profile.md",root).sections[0]
         payload={"csrf":token,"id":first.id,"action":"duplicate","title":first.title,"type":first.type,"content":first.markdown}
         opener.open(Request(base+"/section/action",data=urlencode(payload).encode()))
+        assert not any(s.title.endswith(" Copy") for s in parse_profile(root/"profile.md",root).sections)
+        draft=json.loads(opener.open(base+"/api/draft").read()); assert " Copy" in draft["markdown"]
+        opener.open(Request(base+"/profile/draft-save",data=urlencode({"csrf":token}).encode()))
         p=parse_profile(root/"profile.md",root); copy=next(s for s in p.sections if s.title.endswith(" Copy"))
         response=opener.open(Request(base+"/section/action",data=urlencode({"csrf":token,"id":copy.id,"action":"delete"}).encode())).read().decode(); assert "Undo delete" in response
         opener.open(Request(base+"/section/undo",data=urlencode({"csrf":token}).encode()))

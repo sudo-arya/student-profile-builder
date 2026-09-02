@@ -8,7 +8,10 @@ from .config import load_config, save_config
 from .preview import preview
 from .profile import Profile, Section, _render, _slug, parse_profile, serialize_profile
 from .mutations import set_asset, update_appearance, update_profile_fields
-from .template_tools import check_template, create_template, format_info
+from .template_tools import (check_template, contribution_check, create_template,
+                             format_info, promote_template)
+from .workspace import (default_profile_path, ensure_working_profile, git_safety_status,
+                        restore_default_profile, working_profile_path)
 from .templates import TemplateRegistry
 from .utils import BuilderError
 from .deployment import DeploymentRequest, IITDDeploymentProvider, IITDTarget
@@ -52,7 +55,9 @@ def _parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("validate"); sub.add_parser("templates")
     profile_cmd=sub.add_parser("profile",help="Show or safely update profile fields").add_subparsers(dest="profile_action",required=True)
-    profile_cmd.add_parser("show"); profile_set=profile_cmd.add_parser("set"); profile_set.add_argument("field"); profile_set.add_argument("value")
+    profile_cmd.add_parser("show"); profile_cmd.add_parser("show-raw"); profile_cmd.add_parser("path"); profile_cmd.add_parser("default-path")
+    restore=profile_cmd.add_parser("restore-default"); restore.add_argument("--yes",action="store_true")
+    profile_set=profile_cmd.add_parser("set"); profile_set.add_argument("field"); profile_set.add_argument("value")
     appearance_cmd=sub.add_parser("appearance",help="Show or update website appearance").add_subparsers(dest="appearance_action",required=True)
     appearance_cmd.add_parser("show"); appearance_set=appearance_cmd.add_parser("set"); appearance_set.add_argument("--visitor-switching",choices=["on","off"],required=True); appearance_set.add_argument("--default",choices=["light","dark","system"],required=True)
     sections=sub.add_parser("sections",help="Manage profile sections").add_subparsers(dest="section_action",required=True)
@@ -71,6 +76,10 @@ def _parser() -> argparse.ArgumentParser:
     check = sub.add_parser("template-check"); check.add_argument("template_id"); check.add_argument("--profile", type=Path)
     create = sub.add_parser("template-create"); create.add_argument("template_id", nargs="?")
     create.add_argument("--name"); create.add_argument("--author"); create.add_argument("--engine", choices=["jinja", "static", "external-build"])
+    create.add_argument("--location",choices=["local","repository"])
+    promote=sub.add_parser("template-promote"); promote.add_argument("template_id")
+    contribution=sub.add_parser("template-contribution-check"); contribution.add_argument("template_id"); contribution.add_argument("--local",action="store_true")
+    sub.add_parser("git-check")
     deploy = sub.add_parser("deploy", help="Deploy a built static website")
     providers = deploy.add_subparsers(dest="provider", required=True)
     iitd = providers.add_parser("iitd", help="IITD public (Faculty/PhD) or IITD-network-only hosting",description="Public hosting is for IIT Delhi faculty and PhD students. Private hosting is available to IITD users with CSC home space and is accessible only from the IIT Delhi network.")
@@ -118,13 +127,17 @@ def interactive(root: Path) -> int:
 
 
 def _create_interactive(root: Path, template_id: str | None = None, name: str | None = None,
-                        author: str | None = None, engine: str | None = None) -> Path:
+                        author: str | None = None, engine: str | None = None,
+                        location: str | None = None) -> Path:
     print("Create Template")
     template_id = template_id or input("Template ID: ").strip()
     name = name or input("Template name: ").strip()
     author = author or input("Author: ").strip()
     engine = engine or input("Engine (jinja/static/external-build): ").strip()
-    return create_template(root, template_id, name, author, engine)
+    if not location:
+        choice=input("Development location (1 local only, 2 repository contribution): ").strip()
+        location="repository" if choice=="2" else "local"
+    return create_template(root, template_id, name, author, engine, location=location)
 
 
 def _confirm_first() -> bool:
@@ -207,6 +220,7 @@ def _github_interactive(root: Path, config) -> None:
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv); root = Path.cwd()
     try:
+        ensure_working_profile(root)
         if not args.command: return interactive(root)
         if args.command=="deployment-worker":
             from .deployment_worker import run_worker
@@ -224,6 +238,13 @@ def main(argv: list[str] | None = None) -> int:
             if recommendations: print("\nRecommendations:\n"+"\n".join("- "+item for item in recommendations))
         elif args.command=="profile":
             if args.profile_action=="show": print(yaml.safe_dump(parse_profile(root/"profile.md",root).data,sort_keys=False,allow_unicode=True))
+            elif args.profile_action=="show-raw": print(working_profile_path(root).read_text(encoding="utf-8"),end="")
+            elif args.profile_action=="path": print(working_profile_path(root).resolve())
+            elif args.profile_action=="default-path": print(default_profile_path(root).resolve())
+            elif args.profile_action=="restore-default":
+                confirmed=args.yes or input("Restore Aarya Mehta default profile? Current local data will be backed up and replaced. [y/N]: ").strip().lower() in {"y","yes"}
+                if not confirmed: print("Restore cancelled.")
+                else: restore_default_profile(root); build_site(root); print("Default profile restored.")
             else: update_profile_fields(root,{args.field:args.value}); print("Profile updated.")
         elif args.command=="appearance":
             if args.appearance_action=="show":
@@ -243,7 +264,14 @@ def main(argv: list[str] | None = None) -> int:
             item = registry.get(args.template_id, compatible=False); print(format_info(item), "\n")
             print("\n".join(check_template(root, args.template_id, args.profile))); print("\nTemplate check passed.")
         elif args.command == "template-create":
-            path = _create_interactive(root, args.template_id, args.name, args.author, args.engine); print(f"Created {path}")
+            path = _create_interactive(root, args.template_id, args.name, args.author, args.engine,args.location); print(f"Created {path}")
+        elif args.command=="template-promote": print(f"Promoted {promote_template(root,args.template_id)}")
+        elif args.command=="template-contribution-check": print("\n".join(contribution_check(root,args.template_id,local=args.local)))
+        elif args.command=="git-check":
+            labels={"working_profile":"Working profile ignored","user_assets":"User assets ignored","runtime":"Runtime state ignored","local_templates":"Local templates ignored","templates_contributable":"Templates tracked/contributable","default_tracked":"Canonical default tracked"}
+            status=git_safety_status(root)
+            for key,label in labels.items(): print(f"{label}: {'Yes' if status[key] else 'No'}")
+            if not all(status.values()): raise BuilderError("Git safety configuration needs attention.")
         elif args.command in {"build", "preview"}:
             output = build_site(root, config, template_id=args.template, profile_path=args.profile)
             if args.command == "build": print(f"Website built in {output}")
