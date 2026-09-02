@@ -94,12 +94,60 @@ installed everything correctly inside `.venv`.
   **OpenSSH Client** optional feature.
 - Missing optional tools never block profile editing, local builds, or preview.
 
-## Linux and macOS quick start
+## macOS: complete installation and startup
 
-```bash
-# Linux or macOS
-python3 bootstrap.py
-```
+1. Check Python with `python3 --version`. If it is older than 3.11 or missing, install a current
+   Python 3 from <https://www.python.org/downloads/macos/>. Homebrew users may instead run
+   `brew install python`; installing Homebrew itself is outside this project.
+2. Check Git with `git --version`. If macOS offers to install Command Line Tools, accept that
+   system prompt, or download the repository as a ZIP from GitHub.
+3. Clone and enter the project when Git is available:
+
+   ```bash
+   git clone https://github.com/sudo-arya/student-profile-builder.git
+   cd student-profile-builder
+   ```
+
+4. Start the application:
+
+   ```bash
+   python3 bootstrap.py
+   ```
+
+   The first run creates `.venv` and downloads Python dependencies. Later, use the same command or
+   `./start.sh`. A direct GUI launch is `.venv/bin/python manage.py gui`.
+
+## Linux: complete installation and startup
+
+1. Check the required commands:
+
+   ```bash
+   python3 --version
+   git --version
+   ```
+
+2. If Python is missing, install Python 3.11 or newer, its virtual-environment component, and pip
+   using your distribution's package manager. For Ubuntu/Debian, for example:
+
+   ```bash
+   sudo apt update
+   sudo apt install python3 python3-venv python3-pip
+   ```
+
+   If Git is missing and you want to clone the repository, install it separately with
+   `sudo apt install git`. Users of Fedora, Arch, or another distribution should use its equivalent
+   packages. Alternatively, download and extract the GitHub ZIP without Git.
+
+3. Clone and start:
+
+   ```bash
+   git clone https://github.com/sudo-arya/student-profile-builder.git
+   cd student-profile-builder
+   python3 bootstrap.py
+   ```
+
+4. For later launches, run `./start.sh` or `.venv/bin/python manage.py gui`. Git, GitHub CLI, and
+   OpenSSH remain optional unless their corresponding deployment feature is used.
 
 See [Installation and startup](docs/INSTALLATION.md) for first-run internet requirements, repair,
 proxy behavior, convenience launchers, and optional deployment tools.

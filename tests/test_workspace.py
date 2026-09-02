@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from urllib.request import ProxyHandler, Request, build_opener
 
 from conftest import ROOT, make_project
-from profile_builder.gui import create_server
+from profile_builder.gui import create_server, _basic_profile_fields, _online_profile_fields
 from profile_builder.profile import parse_profile
 
 
@@ -14,6 +14,17 @@ def workspace_project(tmp_path):
     root=make_project(tmp_path)
     shutil.copy2(ROOT/"examples"/"profiles"/"full.md",root/"profile.md")
     return root
+
+
+def test_python311_safe_profile_field_renderers(tmp_path):
+    root=workspace_project(tmp_path)
+    profile=parse_profile(root/"profile.md",root)
+    basic=_basic_profile_fields(profile)
+    links=_online_profile_fields(profile.data["links"])
+    assert 'type="email" autocomplete="email"' in basic
+    assert 'name="email"' in basic
+    assert 'name="link_github"' in links
+    assert "new URL(this.value)" in links
 
 
 def test_workspace_has_persistent_safe_preview_and_mobile_switch(tmp_path):

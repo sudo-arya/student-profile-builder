@@ -36,6 +36,40 @@ class UploadedFile:
     data: bytes
 
 
+def _basic_profile_fields(profile: Profile) -> str:
+    """Render profile inputs without Python 3.12-only f-string expressions."""
+    rendered=[]
+    for name in ("name","designation","department","institute","email"):
+        attributes='type="email" autocomplete="email"' if name == "email" else ""
+        label=escape(name.title())
+        value=escape(str(profile.data.get(name,"")))
+        rendered.append(f'<label>{label}<input {attributes} name="{name}" value="{value}"></label>')
+    return "".join(rendered)
+
+
+def _online_profile_fields(links: dict[str, str]) -> str:
+    rendered=[]
+    validation=(
+        "if(this.value&amp;&amp;!/^[a-z]+:/i.test(this.value)&amp;&amp;"
+        "/^(?:[a-z0-9-]+[.])+[a-z]{2,}(?:[/:?#].*)?$/i.test(this.value))"
+        "this.value='https://'+this.value;let ok=!this.value;"
+        "try{let u=new URL(this.value);ok=ok||((u.protocol==='http:'||"
+        "u.protocol==='https:')&amp;&amp;u.host)}catch(e){ok=false}"
+        "this.setCustomValidity(ok?'':'Please enter a complete URL starting with http:// or https://');"
+        "this.nextElementSibling.textContent=this.validationMessage"
+    )
+    for name in ("github","linkedin","scholar","website"):
+        placeholder="github.com/username" if name == "github" else "example.com"
+        label=escape(name.title())
+        value=escape(str(links.get(name,"")))
+        rendered.append(
+            f'<label>{label}<input type="url" inputmode="url" autocomplete="url" '
+            f'placeholder="https://{placeholder}" name="link_{name}" value="{value}" '
+            f'onblur="{validation}"><small class="field-error" aria-live="polite"></small></label>'
+        )
+    return "".join(rendered)
+
+
 def _layout(title: str, body: str, message: str = "") -> bytes:
     notice=f'<p class="notice" role="status">{escape(message)}</p>' if message else ""
     body=body.replace("[link](https://example.com)</pre>","[link](https://example.com)\n\n| Year | Degree |\n|---|---|\n| 2026 | PhD |\n\n```python\nprint('hello')\n```</pre>")
@@ -229,7 +263,9 @@ def create_server(root: Path, port: int = GUI_PORT, open_browser: bool = False, 
             p,problem=(state["live_profile"],state["live_error"] or None) if state["live_profile"] is not None else safe_profile()
             if p is None: return self.send(_layout("Edit Profile",f'<section><h2>Profile recovery</h2><p>The profile and backup cannot be parsed safely.</p><pre>{escape(problem or "Unknown error")}</pre><p>Edit this file and reload:</p><code>{escape(str(root/"profile.md"))}</code></section>'))
             if problem: flashes.append("Repair mode: showing the last valid backup. A valid save will repair profile.md.")
-            links=p.data["links"]; fields=''.join(f'<label>{escape(x.title())}<input {"type=\"email\" autocomplete=\"email\"" if x=="email" else ""} name="{x}" value="{escape(str(p.data.get(x,"")))}"></label>' for x in ("name","designation","department","institute","email")); link_fields=''.join(f'''<label>{escape(x.title())}<input type="url" inputmode="url" autocomplete="url" placeholder="https://{'github.com/username' if x=='github' else 'example.com'}" name="link_{x}" value="{escape(str(links.get(x,'')))}" onblur="if(this.value&amp;&amp;!/^[a-z]+:/i.test(this.value)&amp;&amp;/^(?:[a-z0-9-]+[.])+[a-z]{{2,}}(?:[/:?#].*)?$/i.test(this.value))this.value='https://'+this.value;let ok=!this.value;try{{let u=new URL(this.value);ok=ok||((u.protocol==='http:'||u.protocol==='https:')&amp;&amp;u.host)}}catch(e){{ok=false}}this.setCustomValidity(ok?'':'Please enter a complete URL starting with http:// or https://');this.nextElementSibling.textContent=this.validationMessage"><small class="field-error" aria-live="polite"></small></label>''' for x in ("github","linkedin","scholar","website"))
+            links=p.data["links"]
+            fields=_basic_profile_fields(p)
+            link_fields=_online_profile_fields(links)
             selected_template=TemplateRegistry(root/"templates").get(load_config(root/"config.yml").template); supports_theme=bool(selected_template.capabilities.get("theme_switching"))
             theme_options=''.join(f'<option value="{v}" {"selected" if p.theme.default==v else ""}>{v.title()}</option>' for v in ("system","light","dark"))
             fields+=f'''<div><h3>Draft appearance</h3><label><input style="width:auto" type="checkbox" name="theme_enabled" {'checked' if p.theme.enabled else ''} {'disabled' if not supports_theme else ''}> Allow visitor theme switching</label><label>Default appearance<select name="theme_default" {'disabled' if not supports_theme else ''}>{theme_options}</select></label><small>{'Updates the draft preview; saved only with Save Changes.' if supports_theme else 'The selected template does not support theme switching.'}</small></div>'''

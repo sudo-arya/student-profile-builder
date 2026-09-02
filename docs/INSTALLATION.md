@@ -29,19 +29,36 @@ report missing packages even though they are correctly installed in the project 
 
 ## Ubuntu and other Linux desktops
 
+Check `python3 --version` first. Install Python 3.11 or newer and its virtual-environment support
+using the distribution package manager. On Ubuntu/Debian:
+
+```bash
+sudo apt update
+sudo apt install python3 python3-venv python3-pip
+```
+
+Install Git separately (`sudo apt install git`) only when cloning/updating or using GitHub
+deployment. A downloaded GitHub ZIP works without Git. Then, from the project directory:
+
 ```bash
 python3 bootstrap.py
 ```
 
-The convenience `start.sh` runs the same command.
+The convenience `start.sh` runs the same command. Direct launches use
+`.venv/bin/python manage.py gui`.
 
 ## macOS
 
-Install a current Python 3 from python.org or a trusted package manager, then run:
+Check `python3 --version`. If Python 3.11 or newer is unavailable, install a current Python from
+python.org or a trusted package manager such as Homebrew. Check `git --version`; macOS may offer
+to install Command Line Tools, while downloading the repository ZIP avoids the Git requirement.
+Then run:
 
 ```bash
 python3 bootstrap.py
 ```
+
+For later launches, use `./start.sh` or `.venv/bin/python manage.py gui`.
 
 ## What bootstrap does
 
