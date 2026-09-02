@@ -17,6 +17,16 @@ py bootstrap.py
 
 If the Python launcher is unavailable, use `python bootstrap.py` or double-click `START.bat`.
 
+After bootstrap, prefer `START.bat` for normal launches. Direct commands should use the isolated
+interpreter explicitly:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py gui
+```
+
+Running plain `python manage.py gui` without activating `.venv` may select the system Python and
+report missing packages even though they are correctly installed in the project environment.
+
 ## Ubuntu and other Linux desktops
 
 ```bash

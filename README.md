@@ -21,15 +21,80 @@ not replace `profile.md`. Optional managed photo, CV, and PNG/ICO website-icon i
 across both interfaces. If a manual edit damages the profile, the GUI retains navigation and offers
 last-valid-backup recovery.
 
-## Recommended installation and startup
+## Windows: complete installation and startup
 
-Install Python 3.11 or newer, then run the source bootstrapper. It creates and manages an isolated
-`.venv`; project packages are never installed globally.
+Only Python 3.11 or newer is required for editing, building, and previewing. Git is needed only to
+download/update the source with Git, while GitHub CLI and OpenSSH are optional deployment tools.
+
+### 1. Check Python
+
+Open PowerShell and run:
 
 ```powershell
-# Windows
+py --version
+python --version
+```
+
+If neither command reports Python 3.11 or newer, install the current Windows Python release from
+<https://www.python.org/downloads/windows/>. Enable **Add python.exe to PATH** in the installer,
+finish installation, close PowerShell, and open it again. `winget` users may instead run:
+
+```powershell
+winget install --id Python.Python.3.12 -e
+```
+
+Python must be installed by the user; this project never installs Python or changes system PATH.
+
+### 2. Download the project
+
+If Git is installed:
+
+```powershell
+git --version
+git clone https://github.com/sudo-arya/student-profile-builder.git
+cd student-profile-builder
+```
+
+If `git` is not recognized, either install Git from <https://git-scm.com/download/win> and reopen
+PowerShell, or download **Code → Download ZIP** from the GitHub repository and extract it. Git is
+not needed after a ZIP download unless you want updates or GitHub Pages deployment.
+
+### 3. Bootstrap and start
+
+From the extracted/cloned project directory, double-click `START.bat`, or run:
+
+```powershell
 py bootstrap.py
 ```
+
+If `py` is unavailable but `python` works, run `python bootstrap.py`. Bootstrap creates `.venv`,
+installs the project dependencies into it, creates the working profile on first run, and launches
+the GUI. The first run needs internet access to download Python packages.
+
+### 4. Start it later
+
+Use `START.bat` again. For direct commands, deliberately use the isolated interpreter:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py gui
+.\.venv\Scripts\python.exe manage.py validate
+.\.venv\Scripts\python.exe manage.py build
+```
+
+Do not use plain `python manage.py ...` unless `.venv` is activated. Plain `python` can refer to
+the system installation and produce errors such as `No module named yaml` even though bootstrap
+installed everything correctly inside `.venv`.
+
+### Optional Windows tools
+
+- Missing `git`: affects cloning, updates, and GitHub deployment only.
+- Missing `gh`: affects GitHub Pages publishing only. Install from <https://cli.github.com/> and
+  run `gh auth login`.
+- Missing `ssh`/`scp`: affects IIT Delhi publishing only. In Windows Settings, install the
+  **OpenSSH Client** optional feature.
+- Missing optional tools never block profile editing, local builds, or preview.
+
+## Linux and macOS quick start
 
 ```bash
 # Linux or macOS
@@ -65,6 +130,9 @@ all commands work as `python manage.py ...` from the repository root.
 ## For students
 
 Edit `profile.md`; it remains the source of truth. Then launch the menu:
+
+On Windows, use `.\.venv\Scripts\python.exe manage.py`; on Linux/macOS, use
+`.venv/bin/python manage.py`. The examples below assume the virtual environment is activated.
 
 ```powershell
 python manage.py
