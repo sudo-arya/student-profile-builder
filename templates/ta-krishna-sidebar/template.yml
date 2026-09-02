@@ -2,8 +2,8 @@ manifest_version: "1.0"
 id: ta-krishna-sidebar
 name: Template 3
 version: "1.0.0"
-author: Krishna Bisht
-description: Minimal academic portfolio with a sticky identity card and spacious content column. Designed by Krishna Bisht.
+author: Krishna Bisht (2026AIB2557)
+description: Minimal academic portfolio with a sticky identity card and spacious content column. Designed by Krishna Bisht (2026AIB2557).
 engine: jinja
 entry: index.html.j2
 static_directory: static

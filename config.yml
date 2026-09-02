@@ -1,4 +1,4 @@
-template: ta-arya-editorial
+template: basic-multipage
 output_directory: dist
 preview:
   port: 8001

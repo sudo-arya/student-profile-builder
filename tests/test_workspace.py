@@ -28,7 +28,7 @@ def test_python311_safe_profile_field_renderers(tmp_path):
 
 
 def test_production_code_avoids_python312_only_nested_fstring_patterns():
-    sources=list((ROOT/"src").rglob("*.py"))+[ROOT/"manage.py",ROOT/"bootstrap.py"]
+    sources=list((ROOT/"src").rglob("*.py"))+list((ROOT/"templates").rglob("*.py"))+[ROOT/"manage.py",ROOT/"bootstrap.py"]
     forbidden=("{f'",'{f"',"else f'",'else f"',"{''.join(f")
     for path in sources:
         source=path.read_text(encoding="utf-8")

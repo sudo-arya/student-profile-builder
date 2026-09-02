@@ -2,8 +2,8 @@ manifest_version: "1.0"
 id: ta-balaji-tailwind
 name: Template 2
 version: "1.0.0"
-author: Athinagaram Shree Balaji
-description: Polished card-based academic portfolio with self-contained responsive styling. Designed by Athinagaram Shree Balaji.
+author: Athinagaram Shree Balaji (2026AIB2141)
+description: Polished card-based academic portfolio with self-contained responsive styling. Designed by Athinagaram Shree Balaji (2026AIB2141).
 engine: jinja
 entry: index.html.j2
 static_directory: static

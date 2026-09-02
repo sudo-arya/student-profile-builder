@@ -9,6 +9,12 @@ if (bar && toggle && nav) {
   nav.addEventListener('click', event => {
     if (event.target.closest('a')) { bar.classList.remove('nav-open'); toggle.setAttribute('aria-expanded', 'false'); }
   });
+  nav.addEventListener('wheel', event => {
+    if (getComputedStyle(nav).display === 'flex' && nav.scrollWidth > nav.clientWidth && Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+      event.preventDefault();
+      nav.scrollLeft += event.deltaY;
+    }
+  }, { passive: false });
 }
 const links = [...document.querySelectorAll('#site-nav a')];
 const sections = links.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
