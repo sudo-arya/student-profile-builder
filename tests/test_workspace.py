@@ -27,6 +27,15 @@ def test_python311_safe_profile_field_renderers(tmp_path):
     assert "new URL(this.value)" in links
 
 
+def test_production_code_avoids_python312_only_nested_fstring_patterns():
+    sources=list((ROOT/"src").rglob("*.py"))+[ROOT/"manage.py",ROOT/"bootstrap.py"]
+    forbidden=("{f'",'{f"',"else f'",'else f"',"{''.join(f")
+    for path in sources:
+        source=path.read_text(encoding="utf-8")
+        for pattern in forbidden:
+            assert pattern not in source, f"{path.relative_to(ROOT)} contains {pattern!r}"
+
+
 def test_workspace_has_persistent_safe_preview_and_mobile_switch(tmp_path):
     root=workspace_project(tmp_path); server=create_server(root,0); thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start(); opener=build_opener(ProxyHandler({})); base=f"http://127.0.0.1:{server.server_port}"
     try:

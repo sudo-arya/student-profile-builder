@@ -4,8 +4,9 @@ Bootstrap copies `defaults/profile.default.md` to local `profile.md` only when t
 working profile is absent. Existing student data is never overwritten.
 
 Student Profile Builder is distributed as source code and supports Windows 10/11, Linux desktop
-systems (including Ubuntu), and macOS. Python 3.11 or newer must already be installed. iPhone and
-iPad iOS are not supported runtimes.
+systems (including Ubuntu), and macOS. Python 3.11.x is the recommended compatibility version;
+Python 3.11.9 is the clean-install baseline. Newer supported versions may also work. Python must
+already be installed. iPhone and iPad iOS are not supported runtimes.
 
 ## Windows
 
@@ -13,6 +14,14 @@ From the project directory run:
 
 ```powershell
 py bootstrap.py
+```
+
+To install and explicitly use the recommended version:
+
+```powershell
+winget install --id Python.Python.3.11 -e --source winget
+py -3.11 --version
+py -3.11 bootstrap.py
 ```
 
 If the Python launcher is unavailable, use `python bootstrap.py` or double-click `START.bat`.
@@ -34,7 +43,7 @@ using the distribution package manager. On Ubuntu/Debian:
 
 ```bash
 sudo apt update
-sudo apt install python3 python3-venv python3-pip
+sudo apt install python3.11 python3.11-venv python3-pip
 ```
 
 Install Git separately (`sudo apt install git`) only when cloning/updating or using GitHub
@@ -49,8 +58,8 @@ The convenience `start.sh` runs the same command. Direct launches use
 
 ## macOS
 
-Check `python3 --version`. If Python 3.11 or newer is unavailable, install a current Python from
-python.org or a trusted package manager such as Homebrew. Check `git --version`; macOS may offer
+Check `python3 --version`. Python 3.11.x is recommended. Install it from python.org or with
+`brew install python@3.11`. Check `git --version`; macOS may offer
 to install Command Line Tools, while downloading the repository ZIP avoids the Git requirement.
 Then run:
 

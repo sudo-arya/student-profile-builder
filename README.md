@@ -23,7 +23,10 @@ last-valid-backup recovery.
 
 ## Windows: complete installation and startup
 
-Only Python 3.11 or newer is required for editing, building, and previewing. Git is needed only to
+Python **3.11.x is the recommended compatibility version** for this project. Python 3.11.9 is the
+version used by the reported clean Windows installation and is the baseline this source supports.
+Newer supported Python versions may also work, but using 3.11 keeps another-device installations
+consistent. Git is needed only to
 download/update the source with Git, while GitHub CLI and OpenSSH are optional deployment tools.
 
 ### 1. Check Python
@@ -40,7 +43,14 @@ If neither command reports Python 3.11 or newer, install the current Windows Pyt
 finish installation, close PowerShell, and open it again. `winget` users may instead run:
 
 ```powershell
-winget install --id Python.Python.3.12 -e
+winget install --id Python.Python.3.11 -e --source winget
+```
+
+After installation, close and reopen PowerShell, then verify and select Python 3.11 explicitly:
+
+```powershell
+py -3.11 --version
+py -3.11 bootstrap.py
 ```
 
 Python must be installed by the user; this project never installs Python or changes system PATH.
@@ -96,9 +106,13 @@ installed everything correctly inside `.venv`.
 
 ## macOS: complete installation and startup
 
-1. Check Python with `python3 --version`. If it is older than 3.11 or missing, install a current
-   Python 3 from <https://www.python.org/downloads/macos/>. Homebrew users may instead run
-   `brew install python`; installing Homebrew itself is outside this project.
+1. Check Python with `python3 --version`. Python 3.11.x is recommended. Install Python 3.11 from
+   <https://www.python.org/downloads/macos/>, or with Homebrew:
+
+   ```bash
+   brew install python@3.11
+   "$(brew --prefix python@3.11)/bin/python3.11" --version
+   ```
 2. Check Git with `git --version`. If macOS offers to install Command Line Tools, accept that
    system prompt, or download the repository as a ZIP from GitHub.
 3. Clone and enter the project when Git is available:
@@ -111,7 +125,7 @@ installed everything correctly inside `.venv`.
 4. Start the application:
 
    ```bash
-   python3 bootstrap.py
+   python3.11 bootstrap.py
    ```
 
    The first run creates `.venv` and downloads Python dependencies. Later, use the same command or
@@ -126,13 +140,16 @@ installed everything correctly inside `.venv`.
    git --version
    ```
 
-2. If Python is missing, install Python 3.11 or newer, its virtual-environment component, and pip
-   using your distribution's package manager. For Ubuntu/Debian, for example:
+2. If Python is missing, install Python 3.11 and its virtual-environment component when those
+   packages are available in your distribution:
 
    ```bash
    sudo apt update
-   sudo apt install python3 python3-venv python3-pip
+   sudo apt install python3.11 python3.11-venv python3-pip
    ```
+
+   On a distribution whose official repository provides Python 3.12 instead of 3.11, the supported
+   system packages are also acceptable: `sudo apt install python3 python3-venv python3-pip`.
 
    If Git is missing and you want to clone the repository, install it separately with
    `sudo apt install git`. Users of Fedora, Arch, or another distribution should use its equivalent
@@ -143,7 +160,7 @@ installed everything correctly inside `.venv`.
    ```bash
    git clone https://github.com/sudo-arya/student-profile-builder.git
    cd student-profile-builder
-   python3 bootstrap.py
+   python3.11 bootstrap.py
    ```
 
 4. For later launches, run `./start.sh` or `.venv/bin/python manage.py gui`. Git, GitHub CLI, and
