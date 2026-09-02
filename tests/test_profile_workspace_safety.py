@@ -173,6 +173,26 @@ def test_raw_live_preview_is_isolated_and_invalid_draft_keeps_last_valid(tmp_pat
         server.shutdown(); server.server_close(); thread.join(timeout=2)
 
 
+def test_raw_editor_replaces_complete_profile_and_rebuilds_portfolio(tmp_path):
+    root=make_project(tmp_path); shutil.copy2(REPOSITORY_ROOT/"examples/profiles/minimal.md",root/"profile.md")
+    replacement=(REPOSITORY_ROOT/"examples/profiles/full.md").read_text(encoding="utf-8").replace("Asha Student","Replacement Student")
+    server=create_server(root,0); thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start()
+    opener=build_opener(ProxyHandler({})); base=f"http://127.0.0.1:{server.server_port}"
+    try:
+        page=opener.open(base+"/profile").read().decode(); csrf=re.search(r'name="csrf" value="([^"]+)',page).group(1)
+        preview=json.loads(opener.open(Request(base+"/profile/raw-preview",data=urlencode({"csrf":csrf,"markdown":replacement}).encode())).read())
+        assert preview["valid"] is True and preview["unsaved"] is True
+        assert "Replacement Student" in opener.open(base+"/live-site/").read().decode()
+        opener.open(Request(base+"/profile/draft-save",data=urlencode({"csrf":csrf}).encode())).read()
+        assert (root/"profile.md").read_text(encoding="utf-8")==replacement
+        saved=parse_profile(root/"profile.md",root)
+        assert saved.data["name"]=="Replacement Student"
+        assert [section.title for section in saved.sections]==["About","Education","Publications","Projects","Awards"]
+        assert "Replacement Student" in (root/"dist/index.html").read_text(encoding="utf-8")
+    finally:
+        server.shutdown(); server.server_close(); thread.join(timeout=2)
+
+
 def multipart(fields):
     boundary="----profile-builder-live-preview-test"
     chunks=[]
