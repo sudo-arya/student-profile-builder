@@ -266,7 +266,7 @@ def test_balaji_dark_build_keeps_local_icons_for_readded_named_sections(tmp_path
 
 def test_imported_template_bottoms_and_list_markers_match_design_contract(tmp_path):
     root = make_project(tmp_path)
-    profile_text = (ROOT / "profile.md").read_text(encoding="utf-8")
+    profile_text = (ROOT / "defaults/profile.default.md").read_text(encoding="utf-8")
     (root / "profile.md").write_text(profile_text.replace("enabled: true", "enabled: false", 1), encoding="utf-8")
     expected = {
         "ta-arya-editorial": "Indian Institute of Technology Delhi</footer>",

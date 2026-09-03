@@ -12,11 +12,12 @@ import pytest
 from profile_builder.template_tools import contribution_check, create_template, promote_template
 from profile_builder.templates import TemplateRegistry
 from profile_builder.workspace import (ensure_working_profile, git_safety_status,
-                                       restore_default_profile, save_profile_text)
+                                       normalize_raw_profile, restore_default_profile,
+                                       save_profile_text)
 from profile_builder.gui import create_server
 from profile_builder.builder import build_site
 from profile_builder.profile import Profile, Theme, parse_profile, serialize_profile
-from profile_builder.config import load_config
+from profile_builder.config import Config, load_config, save_config
 from conftest import make_project
 
 
@@ -189,6 +190,52 @@ def test_raw_editor_replaces_complete_profile_and_rebuilds_portfolio(tmp_path):
         assert saved.data["name"]=="Replacement Student"
         assert [section.title for section in saved.sections]==["About","Education","Publications","Projects","Awards"]
         assert "Replacement Student" in (root/"dist/index.html").read_text(encoding="utf-8")
+    finally:
+        server.shutdown(); server.server_close(); thread.join(timeout=2)
+
+
+def test_raw_editor_repairs_missing_optional_media_before_complete_save(tmp_path):
+    root=make_project(tmp_path); shutil.copy2(REPOSITORY_ROOT/"examples/profiles/minimal.md",root/"profile.md")
+    replacement=(REPOSITORY_ROOT/"examples/profiles/full.md").read_text(encoding="utf-8")
+    replacement=replacement.replace("assets/profile-placeholder.svg","assets/avatar-placeholder.png").replace('cv: ""','cv: assets/curriculum-vitae.pdf')
+    normalized,warnings=normalize_raw_profile(root,replacement)
+    assert 'photo: assets/profile-placeholder.svg' in normalized
+    assert "cv: ''" in normalized
+    assert len(warnings)==2
+    server=create_server(root,0); thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start()
+    opener=build_opener(ProxyHandler({})); base=f"http://127.0.0.1:{server.server_port}"
+    try:
+        page=opener.open(base+"/profile").read().decode(); csrf=re.search(r'name="csrf" value="([^"]+)',page).group(1)
+        preview=json.loads(opener.open(Request(base+"/profile/raw-preview",data=urlencode({"csrf":csrf,"markdown":replacement}).encode())).read())
+        assert preview["valid"] is True and "was not found" in preview["warning"]
+        assert preview["markdown"]==normalized
+        opener.open(Request(base+"/profile/draft-save",data=urlencode({"csrf":csrf}).encode())).read()
+        saved=parse_profile(root/"profile.md",root)
+        assert saved.data["photo"]=="assets/profile-placeholder.svg" and saved.data["cv"]==""
+    finally:
+        server.shutdown(); server.server_close(); thread.join(timeout=2)
+
+
+def test_raw_editor_disables_theme_switching_for_selected_incapable_template(tmp_path):
+    root=make_project(tmp_path); shutil.copy2(REPOSITORY_ROOT/"examples/profiles/minimal.md",root/"profile.md")
+    config=load_config(root/"config.yml")
+    save_config(root/"config.yml",Config("ta-arya-editorial",config.output_directory,config.preview_port))
+    replacement_profile=parse_profile(REPOSITORY_ROOT/"examples/profiles/full.md",REPOSITORY_ROOT)
+    candidate=root/"replacement.md"
+    serialize_profile(Profile(replacement_profile.data,replacement_profile.markdown,replacement_profile.html,replacement_profile.sections,Theme(True,"dark")),candidate,backup=False,project_root=root)
+    replacement=candidate.read_text(encoding="utf-8")
+    server=create_server(root,0); thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start()
+    opener=build_opener(ProxyHandler({})); base=f"http://127.0.0.1:{server.server_port}"
+    try:
+        page=opener.open(base+"/profile").read().decode(); csrf=re.search(r'name="csrf" value="([^"]+)',page).group(1)
+        preview=json.loads(opener.open(Request(base+"/profile/raw-preview",data=urlencode({"csrf":csrf,"markdown":replacement}).encode())).read())
+        assert preview["valid"] is True
+        assert "theme switching was disabled" in preview["warning"]
+        assert "enabled: false" in preview["markdown"] and "default: dark" in preview["markdown"]
+        opener.open(Request(base+"/profile/draft-save",data=urlencode({"csrf":csrf}).encode())).read()
+        saved=parse_profile(root/"profile.md",root)
+        assert saved.theme==Theme(False,"dark")
+        assert saved.data["name"]==replacement_profile.data["name"]
     finally:
         server.shutdown(); server.server_close(); thread.join(timeout=2)
 

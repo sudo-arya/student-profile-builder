@@ -3,14 +3,52 @@ from __future__ import annotations
 
 from pathlib import Path
 import os
+import re
 import shutil
 import tempfile
+import yaml
 
 from .profile import parse_profile
-from .utils import BuilderError
+from .utils import BuilderError, confined_path
 
 DEFAULT_PROFILE = Path("defaults/profile.default.md")
 WORKING_PROFILE = Path("profile.md")
+
+
+def normalize_raw_profile(root: Path, text: str, *, theme_switching: bool = True) -> tuple[str, tuple[str, ...]]:
+    """Normalize recoverable incompatibilities in a user-supplied raw profile.
+
+    Unsafe/out-of-project paths are deliberately left unchanged for normal validation to reject.
+    """
+    match=re.match(r"\A---[ \t]*\r?\n(.*?)\r?\n---[ \t]*(\r?\n|\Z)(.*)\Z",text,re.S)
+    if not match: return text,()
+    try: data=yaml.safe_load(match.group(1)) or {}
+    except yaml.YAMLError: return text,()
+    if not isinstance(data,dict): return text,()
+    warnings=[]; changed=False; assets=(root/"assets").resolve()
+    for field,label in (("photo","Profile image"),("cv","CV"),("icon","Website icon")):
+        value=data.get(field)
+        if not isinstance(value,str) or not value: continue
+        try: candidate=confined_path(root,value,label)
+        except BuilderError: continue
+        if assets not in candidate.parents or candidate.is_file(): continue
+        if field=="photo" and (root/"assets/profile-placeholder.svg").is_file():
+            data[field]="assets/profile-placeholder.svg"
+            warnings.append(f'{label} "{value}" was not found; the standard placeholder is being used.')
+        else:
+            data[field]=""
+            warnings.append(f'{label} "{value}" was not found; that optional field was cleared.')
+        changed=True
+    theme=data.get("theme")
+    if not theme_switching and isinstance(theme,dict) and theme.get("enabled"):
+        theme["enabled"]=False
+        warnings.append("Visitor theme switching was disabled because the selected template does not support it; the default appearance was preserved.")
+        changed=True
+    if not changed: return text,()
+    newline="\r\n" if "\r\n" in text else "\n"
+    header=yaml.safe_dump(data,sort_keys=False,allow_unicode=True,width=1000).replace("\n",newline)
+    normalized=f"---{newline}{header}---{match.group(2)}{match.group(3)}"
+    return normalized,tuple(warnings)
 
 
 def default_profile_path(root: Path) -> Path:
