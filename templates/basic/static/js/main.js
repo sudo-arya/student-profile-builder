@@ -17,3 +17,28 @@ if (control) {
     const next = dark ? 'light' : 'dark'; localStorage.setItem('profile-theme', next); apply(next);
   });
 }
+
+document.querySelectorAll('[data-section-type="skills"] .section-body p').forEach(paragraph => {
+  const label = paragraph.querySelector(':scope > strong');
+  if (!label) return;
+  const value = paragraph.textContent.slice(label.textContent.length).replace(/^\s*:\s*/, '');
+  const items = value.split(',').map(item => item.trim().replace(/^and\s+/i, '')).filter(Boolean);
+  if (!items.length) return;
+  const group = document.createElement('div');
+  group.className = 'skill-group';
+  const heading = document.createElement('strong');
+  heading.className = 'skill-label';
+  heading.textContent = label.textContent.replace(/:\s*$/, '');
+  const pills = document.createElement('span');
+  pills.className = 'skill-pills';
+  items.forEach(item => {
+    const pill = document.createElement('span');
+    pill.className = 'skill-pill';
+    pill.textContent = item;
+    pills.appendChild(pill);
+  });
+  group.append(heading, pills);
+  paragraph.replaceWith(group);
+});
+
+document.querySelectorAll('[data-section-type="projects"] .section-body a, [data-section-type="custom"] .section-body a').forEach(link => link.classList.add('content-action'));

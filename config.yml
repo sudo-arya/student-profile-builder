@@ -1,4 +1,4 @@
-template: ta-arya-editorial
+template: ta-krishna-sidebar
 output_directory: dist
 preview:
   port: 8000
