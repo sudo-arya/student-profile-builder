@@ -154,6 +154,47 @@ previewing, or building. The application never installs system components automa
    The first run creates `.venv` and downloads Python dependencies. Later, use the same command or
    `./start.sh`. A direct GUI launch is `.venv/bin/python manage.py gui`.
 
+5. IITD publishing requires both the OpenSSH `ssh` and `scp` commands. They are normally included
+   with macOS. Verify that both are available:
+
+   ```bash
+   command -v ssh
+   command -v scp
+   ssh -V
+   ```
+
+   The first two commands normally print `/usr/bin/ssh` and `/usr/bin/scp`. If either command is
+   missing, first install or repair Apple's Command Line Tools:
+
+   ```bash
+   xcode-select --install
+   ```
+
+   Complete the installer, open a new Terminal window, and run the checks again. If the Apple tools
+   still do not provide both commands and Homebrew is already installed, install its OpenSSH package:
+
+   ```bash
+   brew install openssh
+   echo 'export PATH="/opt/homebrew/opt/openssh/bin:$PATH"' >> ~/.zprofile
+   source ~/.zprofile
+   command -v ssh
+   command -v scp
+   ssh -V
+   ```
+
+   On an Intel Mac, Homebrew may use `/usr/local` instead of `/opt/homebrew`. In that case, obtain
+   the correct path without guessing:
+
+   ```bash
+   echo "export PATH=\"$(brew --prefix openssh)/bin:\$PATH\"" >> ~/.zprofile
+   source ~/.zprofile
+   ```
+
+   Restart Student Profile Builder after installing or repairing OpenSSH, then run
+   `python3.11 bootstrap.py --check`. OpenSSH is compulsory only for IITD publishing; local editing,
+   previews, and builds continue to work without it. The application does not install system tools
+   automatically.
+
 ## Linux: complete installation and startup
 
 1. Check the required commands:
@@ -187,9 +228,10 @@ previewing, or building. The application never installs system components automa
    ```
 
 4. For later launches, run `./start.sh` or `.venv/bin/python manage.py gui`.
-5. IITD publishing requires OpenSSH. macOS normally includes `ssh` and `scp`; verify both with
-   `ssh -V` and `scp`. On Linux, install the client when missing (Ubuntu/Debian:
-   `sudo apt install openssh-client`). Git and GitHub CLI remain optional unless needed.
+5. IITD publishing requires OpenSSH. Verify both commands with `command -v ssh`,
+   `command -v scp`, and `ssh -V`. On Ubuntu/Debian, install the client when missing with
+   `sudo apt install openssh-client`. Use the equivalent OpenSSH client package on other Linux
+   distributions. Git and GitHub CLI remain optional unless needed.
 
 See [Installation and startup](docs/INSTALLATION.md) for first-run internet requirements, repair,
 proxy behavior, convenience launchers, and optional deployment tools.
