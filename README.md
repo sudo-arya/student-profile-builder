@@ -236,6 +236,44 @@ previewing, or building. The application never installs system components automa
 See [Installation and startup](docs/INSTALLATION.md) for first-run internet requirements, repair,
 proxy behavior, convenience launchers, and optional deployment tools.
 
+## Force-update an existing clone from GitHub
+
+Use this only when a normal `git pull` fails or when the local application files must exactly match
+the latest `main` branch on GitHub. First stop Student Profile Builder and close its deployment
+terminal. These commands **discard changes to tracked files**, reset tracked `config.yml` settings,
+and remove non-ignored untracked files. The local `profile.md` is ignored by Git, but the commands
+below make an additional backup outside the repository before updating.
+
+On Windows PowerShell, run from the cloned `student-profile-builder` directory:
+
+```powershell
+Copy-Item -LiteralPath .\profile.md -Destination ..\profile.before-update.md -Force
+git fetch origin
+git checkout main
+git reset --hard origin/main
+git clean -fd
+if (-not (Test-Path -LiteralPath .\profile.md)) { Copy-Item -LiteralPath ..\profile.before-update.md -Destination .\profile.md }
+py bootstrap.py
+```
+
+On macOS or Linux, run from the cloned `student-profile-builder` directory:
+
+```bash
+cp profile.md ../profile.before-update.md
+git fetch origin
+git checkout main
+git reset --hard origin/main
+git clean -fd
+[ -f profile.md ] || cp ../profile.before-update.md profile.md
+python3.11 bootstrap.py
+```
+
+If `python3.11` is not the installed executable but `python3 --version` reports a supported Python
+version, use `python3 bootstrap.py`. Do not add `-x` to `git clean`: that would also remove ignored
+student data, managed assets, and the project `.venv`. After confirming that the updated application
+and profile work correctly, the external `profile.before-update.md` backup may be retained or removed
+manually.
+
 ## Manual development setup
 
 Use Python 3.11 or newer. On Windows PowerShell:

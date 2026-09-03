@@ -153,6 +153,7 @@ def test_yamini_matches_reference_components_and_mobile_treatments():
     css = (ROOT / "templates/ta-yamini-research/static/bottom.css").read_text(encoding="utf-8")
     script = (ROOT / "templates/ta-yamini-research/static/presentation.js").read_text(encoding="utf-8")
     main = (ROOT / "templates/ta-yamini-research/static/main.js").read_text(encoding="utf-8")
+    template = (ROOT / "templates/ta-yamini-research/index.html.j2").read_text(encoding="utf-8")
 
     assert '[data-section-type="projects"] .has-entries{grid-auto-rows:1fr;align-items:stretch}' in css
     assert '[data-section-type="projects"] .project-card{margin-top:0!important}' in css
@@ -162,7 +163,11 @@ def test_yamini_matches_reference_components_and_mobile_treatments():
     assert "classList.add('research-card')" in script
     assert "classList.add('research-card', 'dataset-card')" in script
     assert "period.className = 'period'" in script and "meta.className = 'contact-meta'" in script
-    assert "educationEntries[0], ...experienceEntries" in script and "dataset.careerKind = 'experience'" in script
+    assert "document.querySelectorAll('.career-body').forEach" in script
+    assert "entry.dataset.careerKind = careerKind" in script
+    assert "{% for s in sections %}" in template
+    assert "s.type in ['education','experience']" in template
+    assert "s.type != 'experience'" not in template
     assert "meta.textContent = strong.textContent.replace" in script and "body.className = 'news-body'" in script
     assert '.career-body .semantic-entry h2::before{content:none!important;display:none!important}' in css
     assert '[data-section-type="news"] .section-body{padding-left:0!important;border-left:0!important}' in css

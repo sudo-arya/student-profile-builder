@@ -24,15 +24,13 @@
     }
   }
 
-  const career = document.querySelector('.career-body');
-  if (career) {
-    const bodies = [...career.querySelectorAll(':scope > .markdown-body')];
-    const educationEntries = [...(bodies[0]?.querySelectorAll('.semantic-entry') || [])];
-    const experienceEntries = [...(bodies[1]?.querySelectorAll('.semantic-entry') || [])];
-    const entries = [educationEntries[0], ...experienceEntries, ...educationEntries.slice(1)].filter(Boolean);
-    educationEntries.forEach(entry => entry.dataset.careerKind = 'education');
-    experienceEntries.forEach(entry => entry.dataset.careerKind = 'experience');
-    career.querySelectorAll('.markdown-body').forEach(body => body.remove());
+  document.querySelectorAll('.career-body').forEach(career => {
+    const section = career.closest('section[data-section-type]');
+    const careerKind = section?.dataset.sectionType || 'education';
+    const body = career.querySelector(':scope > .markdown-body');
+    const entries = [...(body?.querySelectorAll('.semantic-entry') || [])];
+    entries.forEach(entry => entry.dataset.careerKind = careerKind);
+    if (body) body.remove();
     entries.forEach(entry => {
       entry.classList.add('rail-item');
       const heading = entry.querySelector(':scope > h2');
@@ -68,7 +66,7 @@
       }
       career.appendChild(entry);
     });
-  }
+  });
 
   document.querySelectorAll('[data-section-type="research"] .semantic-entry').forEach(entry => {
     entry.classList.add('research-card');
